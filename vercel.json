@@ -4,6 +4,7 @@
   "rewrites": [
     { "source": "/", "destination": "/landing/index.html" },
     { "source": "/calculadora", "destination": "/landing/calculadora/index.html" },
-    { "source": "/landing", "destination": "/landing/index.html" }
+    { "source": "/landing", "destination": "/landing/index.html" },
+    { "source": "/landing/calculadora", "destination": "/landing/calculadora/index.html" }
   ]
 }

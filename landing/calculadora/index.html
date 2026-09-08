@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+  <link rel="shortcut icon" href="/landing/images/logo.png" type="image/png">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -27,7 +27,7 @@
   </script>
 
   <!-- Estilos Personalizados y Animaciones -->
-  <link rel="stylesheet" href="../css/landing.css">
+  <link rel="stylesheet" href="/landing/css/landing.css">
 </head>
 <body class="antialiased select-none pb-12">
 
@@ -36,9 +36,9 @@
     <div class="max-w-4xl mx-auto flex items-center justify-between">
       
       <!-- Logo e Identidad -->
-      <a href="../index.html" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
+      <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
         <div class="w-10 h-10 rounded-xl overflow-hidden bg-white/5 p-1 border border-white/10 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-          <img src="../images/logo.png" alt="TasaPlus Logo" class="w-full h-full object-contain animate-bounce-slow">
+          <img src="/landing/images/logo.png" alt="TasaPlus Logo" class="w-full h-full object-contain animate-bounce-slow">
         </div>
         <div>
           <h1 class="text-lg font-black text-white tracking-tight flex items-center gap-1">
@@ -52,7 +52,7 @@
 
       <!-- Acciones de Header -->
       <div class="flex items-center gap-2">
-        <a href="../index.html" class="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-extrabold transition-all flex items-center gap-1.5 hover:scale-105" title="Ver Landing Page">
+        <a href="/" class="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-extrabold transition-all flex items-center gap-1.5 hover:scale-105" title="Ver Landing Page">
           <span>Landing</span>
         </a>
 
@@ -248,6 +248,48 @@
     let currentRates = [];
     let selectedRate = null;
 
+    async function getFallbackRates() {
+      let btcUsd = 89000, ethUsd = 2400, bnbUsd = 650;
+      try {
+        const resBinance = await fetch('https://api.binance.com/api/v3/ticker/price?symbols=%5B%22BTCUSDT%22,%22ETHUSDT%22,%22BNBUSDT%22%5D');
+        if (resBinance.ok) {
+          const data = await resBinance.json();
+          data.forEach(item => {
+            if (item.symbol === 'BTCUSDT') btcUsd = parseFloat(item.price);
+            if (item.symbol === 'ETHUSDT') ethUsd = parseFloat(item.price);
+            if (item.symbol === 'BNBUSDT') bnbUsd = parseFloat(item.price);
+          });
+        }
+      } catch (e) {
+        console.warn('Usando precios base cripto:', e);
+      }
+
+      let bcvUsdRate = 135.50;
+      let bcvEurRate = 147.20;
+      let usdtRate = 140.00;
+
+      try {
+        const resBcv = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
+        if (resBcv.ok) {
+          const bcvData = await resBcv.json();
+          if (bcvData && bcvData.promedio) bcvUsdRate = bcvData.promedio;
+        }
+      } catch(e) {}
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const fechaStr = now.toLocaleDateString('es-VE') + ' ' + timeStr;
+
+      return [
+        { code: 'USD', name: 'Dólar BCV', symbol: '$', rateVes: bcvUsdRate, formattedVes: formatRate(bcvUsdRate) + ' Bs', formattedUsd: '$1,00', type: 'bcv', fechaActualizacion: fechaStr },
+        { code: 'EUR', name: 'Euro BCV', symbol: '€', rateVes: bcvEurRate, formattedVes: formatRate(bcvEurRate) + ' Bs', formattedUsd: '$1,09', type: 'bcv', fechaActualizacion: fechaStr },
+        { code: 'USDT', name: 'Binance P2P', symbol: 'USDT', rateVes: usdtRate, formattedVes: formatRate(usdtRate) + ' Bs', formattedUsd: '$1,00', type: 'crypto', fechaActualizacion: fechaStr },
+        { code: 'BNB', name: 'Binance Coin', symbol: 'BNB', rateVes: bnbUsd * usdtRate, formattedVes: formatRate(bnbUsd * usdtRate) + ' Bs', formattedUsd: '$' + formatRate(bnbUsd), type: 'crypto', fechaActualizacion: fechaStr },
+        { code: 'BTC', name: 'Bitcoin', symbol: 'BTC', rateVes: btcUsd * usdtRate, formattedVes: formatRate(btcUsd * usdtRate) + ' Bs', formattedUsd: '$' + formatRate(btcUsd), type: 'crypto', fechaActualizacion: fechaStr },
+        { code: 'ETH', name: 'Ethereum', symbol: 'ETH', rateVes: ethUsd * usdtRate, formattedVes: formatRate(ethUsd * usdtRate) + ' Bs', formattedUsd: '$' + formatRate(ethUsd), type: 'crypto', fechaActualizacion: fechaStr }
+      ];
+    }
+
     async function fetchRates() {
       const refreshIcon = document.getElementById('refresh-icon');
       if (refreshIcon) refreshIcon.classList.add('animate-spin');
@@ -256,18 +298,23 @@
         const res = await fetch('/api/tasas');
         if (res.ok) {
           currentRates = await res.json();
+        } else {
+          currentRates = await getFallbackRates();
+        }
+      } catch (err) {
+        console.warn('API local no disponible, utilizando proveedor fallback en vivo:', err);
+        currentRates = await getFallbackRates();
+      } finally {
+        if (currentRates && currentRates.length > 0) {
           renderCurrencyCards();
           updateSelectedCurrency();
 
-          if (currentRates.length > 0 && currentRates[0].fechaActualizacion) {
+          if (currentRates[0].fechaActualizacion) {
             const parts = currentRates[0].fechaActualizacion.split(' ');
             const timeStr = parts.length > 1 ? parts[1] : currentRates[0].fechaActualizacion;
             document.getElementById('last-updated').textContent = 'Refresco: ' + timeStr;
           }
         }
-      } catch (err) {
-        console.warn('Error conectando a API C#:', err);
-      } finally {
         if (refreshIcon) refreshIcon.classList.remove('animate-spin');
       }
     }

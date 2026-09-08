@@ -501,11 +501,72 @@
       setInterval(fetchLandingTicker, 30000);
     });
 
+    async function getFallbackRatesLanding() {
+      let btcUsd = 89000, ethUsd = 2400, bnbUsd = 650;
+      try {
+        const resBinance = await fetch('https://api.binance.com/api/v3/ticker/price?symbols=%5B%22BTCUSDT%22,%22ETHUSDT%22,%22BNBUSDT%22%5D');
+        if (resBinance.ok) {
+          const data = await resBinance.json();
+          data.forEach(item => {
+            if (item.symbol === 'BTCUSDT') btcUsd = parseFloat(item.price);
+            if (item.symbol === 'ETHUSDT') ethUsd = parseFloat(item.price);
+            if (item.symbol === 'BNBUSDT') bnbUsd = parseFloat(item.price);
+          });
+        }
+      } catch (e) {}
+
+      let bcvUsdRate = 135.50;
+      let bcvEurRate = 147.20;
+      let usdtRate = 140.00;
+
+      try {
+        const resBcv = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
+        if (resBcv.ok) {
+          const bcvData = await resBcv.json();
+          if (bcvData && bcvData.promedio) bcvUsdRate = bcvData.promedio;
+        }
+      } catch(e) {}
+
+      function fmt(n) { return n.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+      return [
+        { code: 'USD', formattedVes: fmt(bcvUsdRate) + ' Bs', formattedUsd: '$1,00' },
+        { code: 'EUR', formattedVes: fmt(bcvEurRate) + ' Bs', formattedUsd: '$1,09' },
+        { code: 'USDT', formattedVes: fmt(usdtRate) + ' Bs', formattedUsd: '$1,00' },
+        { code: 'BNB', formattedVes: fmt(bnbUsd * usdtRate) + ' Bs', formattedUsd: '$' + fmt(bnbUsd) },
+        { code: 'BTC', formattedVes: fmt(btcUsd * usdtRate) + ' Bs', formattedUsd: '$' + fmt(btcUsd) },
+        { code: 'ETH', formattedVes: fmt(ethUsd * usdtRate) + ' Bs', formattedUsd: '$' + fmt(ethUsd) }
+      ];
+    }
+
     async function fetchLandingTicker() {
       try {
+        let tasas = [];
         const res = await fetch('/api/tasas');
         if (res.ok) {
-          const tasas = await res.json();
+          tasas = await res.json();
+        } else {
+          tasas = await getFallbackRatesLanding();
+        }
+        tasas.forEach(t => {
+          if (t.code === 'USD') {
+            document.querySelectorAll('#ticker-usd, #ticker-usd-dup').forEach(el => el.textContent = t.formattedVes);
+            const heroUsd = document.getElementById('hero-usd-val');
+            if (heroUsd) heroUsd.textContent = t.formattedVes;
+          }
+          if (t.code === 'EUR') document.querySelectorAll('#ticker-eur, #ticker-eur-dup').forEach(el => el.textContent = t.formattedVes);
+          if (t.code === 'USDT') {
+            document.querySelectorAll('#ticker-usdt, #ticker-usdt-dup').forEach(el => el.textContent = t.formattedVes);
+            const heroUsdt = document.getElementById('hero-usdt-val');
+            if (heroUsdt) heroUsdt.textContent = t.formattedVes;
+          }
+          if (t.code === 'BTC') document.querySelectorAll('#ticker-btc, #ticker-btc-dup').forEach(el => el.textContent = t.formattedUsd);
+          if (t.code === 'ETH') document.querySelectorAll('#ticker-eth, #ticker-eth-dup').forEach(el => el.textContent = t.formattedUsd);
+          if (t.code === 'BNB') document.querySelectorAll('#ticker-bnb, #ticker-bnb-dup').forEach(el => el.textContent = t.formattedUsd);
+        });
+      } catch (err) {
+        try {
+          const tasas = await getFallbackRatesLanding();
           tasas.forEach(t => {
             if (t.code === 'USD') {
               document.querySelectorAll('#ticker-usd, #ticker-usd-dup').forEach(el => el.textContent = t.formattedVes);
@@ -522,8 +583,8 @@
             if (t.code === 'ETH') document.querySelectorAll('#ticker-eth, #ticker-eth-dup').forEach(el => el.textContent = t.formattedUsd);
             if (t.code === 'BNB') document.querySelectorAll('#ticker-bnb, #ticker-bnb-dup').forEach(el => el.textContent = t.formattedUsd);
           });
-        }
-      } catch (err) {}
+        } catch (e) {}
+      }
     }
   </script>
 </body>
