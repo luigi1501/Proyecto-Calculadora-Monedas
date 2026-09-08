@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TasaPlus — Monitor Inteligente de Cotizaciones y Conversión Financiera</title>
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" href="landing/images/logo.png" type="image/png">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Estilos Personalizados y Animaciones CSS -->
+  <link rel="stylesheet" href="landing/css/landing.css">
+</head>
+<body class="antialiased selection:bg-emerald-500 selection:text-white">
+
+  <!-- Navbar Flotante Glassmorphic -->
+  <nav class="fixed top-0 left-0 right-0 z-50 glass-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl overflow-hidden bg-white/5 p-1 border border-white/10 flex items-center justify-center shadow-lg shadow-emerald-500/10 hover:scale-105 transition-transform">
+          <img src="landing/images/logo.png" alt="TasaPlus Logo" class="w-full h-full object-contain animate-bounce-slow">
+        </div>
+        <span class="text-xl font-black text-white tracking-tight">
+          Tasa<span class="text-emerald-400">Plus</span>
+        </span>
+      </div>
+
+      <!-- Links Desktop -->
+      <div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
+        <a href="#sobre-nosotros" class="hover:text-emerald-400 transition-colors">Sobre TasaPlus</a>
+        <a href="#guia-p2p" class="hover:text-cyan-400 transition-colors">Guía Compras P2P</a>
+        <a href="#referido-binance" class="text-amber-400 font-extrabold hover:text-amber-300 transition-colors flex items-center gap-1">🔥 Crear Cuenta Binance</a>
+        <a href="#descargas" class="hover:text-cyan-400 transition-colors">Descargas</a>
+      </div>
+
+      <!-- Botón Web App Primario para Abrir Calculadora -->
+      <div class="flex items-center gap-3">
+        <a href="https://accounts.binance.com/register?ref=948971471" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-amber-500/20 active:scale-95 text-xs">
+          <span>Crear Cuenta Binance</span>
+        </a>
+        <a href="landing/calculadora/index.html" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-500/25 active:scale-95 text-sm hover:shadow-emerald-400/40 hover:scale-105">
+          <span>Abrir Calculadora</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Ticker Continuo de Tasas en Tiempo Real -->
+    <div class="bg-slate-950/90 border-t border-slate-800/80 py-1.5 overflow-hidden relative">
+      <div class="animate-marquee text-xs font-medium text-slate-300 flex items-center gap-8 whitespace-nowrap">
+        <div class="flex items-center gap-6" id="ticker-block-1">
+          <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> <strong>USD BCV:</strong> <span class="text-emerald-400 font-mono" id="ticker-usd">Cargando...</span></span>
+          <span class="text-slate-700">•</span>
+          <span class="flex items-center gap-2"><strong>EUR BCV:</strong> <span class="text-cyan-400 font-mono" id="ticker-eur">Cargando...</span></span>
+          <span class="text-slate-700">•</span>
+          <span class="flex items-center gap-2"><strong>USDT P2P:</strong> <span class="text-emerald-300 font-mono" id="ticker-usdt">Cargando...</span></span>
+          <span class="text-slate-700">•</span>
+          <span class="flex items-center gap-2"><strong>BTC:</strong> <span class="text-amber-400 font-mono" id="ticker-btc">Cargando...</span></span>
+          <span class="text-slate-700">•</span>
+          <span class="flex items-center gap-2"><strong>ETH:</strong> <span class="text-indigo-400 font-mono" id="ticker-eth">Cargando...</span></span>
+          <span class="text-slate-700">•</span>
+          <span class="flex items-center gap-2"><strong>BNB:</strong> <span class="text-amber-300 font-mono" id="ticker-bnb">Cargando...</span></span>
+        </div>
+        <div class="flex items-center gap-6" id="ticker-block-2">
+          <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> <strong>USD BCV:</strong> <span class="text-emerald-400 font-mono" id="ticker-usd-dup">Cargando...</span></span>
+          <span class="text-slate-700">•</span>
+          <span class="flex items-center gap-2"><strong>EUR BCV:</strong> <span class="text-cyan-400 font-mono" id="ticker-eur-dup">Cargando...</span></span>
+          <span class="text-slate-700">•</span>
+          <span class="flex items-center gap-2"><strong>USDT P2P:</strong> <span class="text-emerald-300 font-mono" id="ticker-usdt-dup">Cargando...</span></span>
+          <span class="text-slate-700">•</span>
+          <span class="flex items-center gap-2"><strong>BTC:</strong> <span class="text-amber-400 font-mono" id="ticker-btc-dup">Cargando...</span></span>
+          <span class="text-slate-700">•</span>
+          <span class="flex items-center gap-2"><strong>ETH:</strong> <span class="text-indigo-400 font-mono" id="ticker-eth-dup">Cargando...</span></span>
+          <span class="text-slate-700">•</span>
+          <span class="flex items-center gap-2"><strong>BNB:</strong> <span class="text-amber-300 font-mono" id="ticker-bnb-dup">Cargando...</span></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="relative pt-44 pb-20 md:pt-56 md:pb-32 overflow-hidden">
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] bg-gradient-to-tr from-emerald-500/25 to-cyan-500/25 rounded-full blur-[120px] pointer-events-none animate-pulse-glow"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center lg:text-left">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-7 space-y-8 reveal">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/90 border border-slate-800 text-xs font-semibold text-emerald-400 shadow-inner hover:border-emerald-500/50 transition-colors">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            Precisión Cambiaria y Cotizaciones Oficiales al Instante
+          </div>
+
+          <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white leading-[1.1]">
+            Monitorea la Tasa BCV y Criptomonedas <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">al Instante</span>
+          </h1>
+
+          <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
+            TasaPlus es el monitor inteligente diseñado para unificar en un solo lugar las cotizaciones oficiales del <strong>Banco Central de Venezuela (USD/EUR)</strong> y los precios reales del mercado cripto <strong>(USDT, BNB, BTC, ETH)</strong>.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+            <a href="landing/calculadora/index.html" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black px-8 py-4 rounded-2xl shadow-xl shadow-emerald-500/25 transition-all hover:scale-105 active:scale-95 text-base hover:shadow-emerald-400/40">
+              <span>Abrir Calculadora</span>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+
+            <a href="#guia-p2p" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-amber-300 font-bold px-6 py-4 rounded-2xl border border-amber-500/30 transition-all text-base hover:border-amber-400 hover:scale-105">
+              <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              <span>Guía Compras P2P</span>
+            </a>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800/80">
+            <div class="hover:scale-105 transition-transform">
+              <p class="text-2xl font-black text-white">100%</p>
+              <p class="text-xs text-slate-400">Gratuito y Libre</p>
+            </div>
+            <div class="hover:scale-105 transition-transform">
+              <p class="text-2xl font-black text-emerald-400">Real-Time</p>
+              <p class="text-xs text-slate-400">Sin Demoras</p>
+            </div>
+            <div class="hover:scale-105 transition-transform">
+              <p class="text-2xl font-black text-cyan-400">P2P Seguro</p>
+              <p class="text-xs text-slate-400">Guía de Consejos</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 reveal">
+          <div class="relative animate-float">
+            <div class="absolute -inset-4 rounded-3xl bg-gradient-to-tr from-emerald-500 to-cyan-500 opacity-25 blur-2xl animate-pulse-glow"></div>
+            
+            <div class="relative glass-card p-7 rounded-3xl border border-slate-700/60 shadow-2xl space-y-6 glow-emerald text-left hover:border-emerald-500/50 transition-all">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                  <img src="landing/images/logo.png" class="w-9 h-9 object-contain">
+                  <span class="font-black text-white text-lg">TasaPlus Monitor</span>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/20 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> En Vivo
+                </span>
+              </div>
+
+              <p class="text-slate-300 text-sm leading-relaxed">
+                TasaPlus actualiza las cotizaciones oficiales del BCV y Binance de forma automatizada, permitiendo realizar conversiones instantáneas con un solo clic.
+              </p>
+
+              <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-slate-400 font-medium">Cotización BCV Oficial</span>
+                  <span class="text-emerald-400 font-mono" id="hero-usd-val">Cargando...</span>
+                </div>
+                <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800">
+                  <span class="text-sm font-bold text-slate-300">Tasa USDT (Binance P2P)</span>
+                  <span class="text-base font-black text-emerald-400" id="hero-usdt-val">Cargando...</span>
+                </div>
+              </div>
+
+              <div class="text-center pt-2">
+                <a href="landing/calculadora/index.html" class="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3.5 rounded-xl text-xs transition-all hover:scale-102 shadow-lg shadow-emerald-500/20">
+                  <span>Ir a la Calculadora Completa</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección 1: ¿De qué trata TasaPlus y Por qué Nació? -->
+  <section id="sobre-nosotros" class="py-20 bg-slate-950/60 border-y border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      
+      <div class="text-center max-w-3xl mx-auto space-y-4 reveal">
+        <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-widest">¿De qué trata TasaPlus?</h2>
+        <h3 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          Información Financiera Transparente y al Alcance de Todos
+        </h3>
+        <p class="text-slate-400 text-base leading-relaxed">
+          TasaPlus es un proyecto creado para resolver la dispersión de información cambiaria. En el día a día, comerciantes, emprendedores y usuarios deben consultar múltiples fuentes para conocer el precio del dólar oficial, el euro y las criptomonedas. TasaPlus unifica todo en un solo lugar con exactitud matemática y actualización continua.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 space-y-4 hover:border-emerald-500/50 hover:-translate-y-2 transition-all duration-300 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 font-black text-xl">
+            💡
+          </div>
+          <h4 class="text-xl font-extrabold text-white">¿Por qué Nació el Proyecto?</h4>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            Nació para ofrecer una herramienta limpia, libre de publicidad molesta o enlaces engañosos, que permita realizar cálculos rápidos y confiables en compras y ventas cotidianas.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 space-y-4 hover:border-cyan-500/50 hover:-translate-y-2 transition-all duration-300 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center border border-cyan-500/20 font-black text-xl">
+            ⚖️
+          </div>
+          <h4 class="text-xl font-extrabold text-white">Transparencia Cambiaria</h4>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            Muestra siempre el valor oficial publicado por el Banco Central de Venezuela (BCV) y contrasta con las tasas del mercado cripto internacional tomadas directamente de Binance.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 space-y-4 hover:border-amber-500/50 hover:-translate-y-2 transition-all duration-300 reveal">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20 font-black text-xl">
+            ⚡
+          </div>
+          <h4 class="text-xl font-extrabold text-white">Cálculo Instantáneo</h4>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            Permite a cualquier persona convertir bolívares a divisa o criptos y viceversa sin tener que hacer operaciones matemáticas manuales ni sufrir errores de redondeo.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Sección 2: Misión y Visión -->
+  <section id="mision-vision" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      
+      <div class="text-center max-w-3xl mx-auto space-y-3 reveal">
+        <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Nuestros Pilares</h2>
+        <h3 class="text-3xl font-black text-white tracking-tight">Misión y Visión de TasaPlus</h3>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 space-y-4 hover:border-emerald-500/40 hover:-translate-y-2 transition-all duration-300 reveal">
+          <div class="flex items-center gap-3">
+            <div class="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h4 class="text-2xl font-black text-white">Nuestra Misión</h4>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Proporcionar a los usuarios y comerciantes una plataforma intuitiva, ágil y precisa para la consulta y conversión de divisas y criptomonedas, garantizando el acceso a la información oficial y de mercado sin fricciones ni cobros ocultos.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 rounded-3xl border border-slate-800 space-y-4 hover:border-cyan-500/40 hover:-translate-y-2 transition-all duration-300 reveal">
+          <div class="flex items-center gap-3">
+            <div class="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            </div>
+            <h4 class="text-2xl font-black text-white">Nuestra Visión</h4>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Consolidarnos como el estándar de referencia independiente en monitoreo de cotizaciones y herramientas financieras, expandiendo la compatibilidad multiplataforma y fomentando la educación en seguridad financiera.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Sección 3: Consejos para Compras P2P Seguras en Binance -->
+  <section id="guia-p2p" class="py-20 bg-slate-950/60 border-t border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      
+      <div class="text-center max-w-3xl mx-auto space-y-4 reveal">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-bold">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.4L20.6 19H3.4L12 5.4zM11 10h2v5h-2v-5zm0 6h2v2h-2v-2z"/></svg>
+          Guía de Seguridad Financiera
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          Consejos Fundamentales para Comprar y Vender Seguro en Binance P2P
+        </h2>
+        <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+          Al realizar operaciones de intercambio en el mercado Peer-to-Peer (P2P), la seguridad es la máxima prioridad. Sigue de manera estricta las siguientes recomendaciones:
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-card p-6 rounded-3xl border border-slate-800 flex items-start gap-4 hover:border-amber-500/40 hover:-translate-y-1 transition-all reveal">
+          <div class="p-3 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex-shrink-0 font-black text-lg">
+            01
+          </div>
+          <div class="space-y-1">
+            <h3 class="text-lg font-bold text-white">Verificación del Comerciante</h3>
+            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+              Prioriza comerciar con usuarios que tengan la <strong>insignia amarilla de Comerciante Verificado</strong> o el estatus <em>Pro</em>. Han superado exigentes requisitos de verificación de identidad.
+            </p>
+          </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-3xl border border-slate-800 flex items-start gap-4 hover:border-emerald-500/40 hover:-translate-y-1 transition-all reveal">
+          <div class="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex-shrink-0 font-black text-lg">
+            02
+          </div>
+          <div class="space-y-1">
+            <h3 class="text-lg font-bold text-white">Porcentaje de Finalización Alto</h3>
+            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+              Elige contrapartes con un <strong>porcentaje de órdenes completadas mayor al 98%</strong> y una trayectoria de más de 100 operaciones en los últimos 30 días.
+            </p>
+          </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-3xl border border-slate-800 flex items-start gap-4 hover:border-rose-500/40 hover:-translate-y-1 transition-all reveal">
+          <div class="p-3 rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20 flex-shrink-0 font-black text-lg">
+            03
+          </div>
+          <div class="space-y-1">
+            <h3 class="text-lg font-bold text-white">Regla de Cero Pagos de Terceros</h3>
+            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+              El titular de la cuenta bancaria de origen o destino debe coincidir <strong>exactamente con el nombre registrado en la cuenta Binance</strong>. Jamás aceptes transferencias desde cuentas de terceros.
+            </p>
+          </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-3xl border border-slate-800 flex items-start gap-4 hover:border-cyan-500/40 hover:-translate-y-1 transition-all reveal">
+          <div class="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex-shrink-0 font-black text-lg">
+            04
+          </div>
+          <div class="space-y-1">
+            <h3 class="text-lg font-bold text-white">Verificación Directa del Saldo Bancario</h3>
+            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+              No liberes las criptomonedas basándote en capturas de pantalla ni mensajes de texto SMS. <strong>Entra directamente a tu banca en línea</strong> y confirma la disponibilidad del dinero.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección Destacada: Registro y Referido en Binance -->
+  <section id="referido-binance" class="py-16 relative overflow-hidden bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-slate-950 border-y border-amber-500/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="glass-card rounded-3xl p-8 sm:p-10 border border-amber-500/40 bg-slate-950/80 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 reveal">
+        <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="space-y-4 text-center lg:text-left max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/10 text-amber-400 border border-amber-400/30 text-xs font-black uppercase tracking-wider">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.4L20.6 19H3.4L12 5.4zM11 10h2v5h-2v-5zm0 6h2v2h-2v-2z"/></svg>
+            ¿Aún no tienes cuenta en Binance?
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            Regístrate Gratis y Obtén <span class="text-amber-400">10% de Descuento</span> en Comisiones
+          </h2>
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+            Crea tu cuenta oficial en Binance a través de nuestro enlace oficial de referido. Comienza a comprar y vender USDT, BTC y BNB con máxima seguridad P2P y comisiones preferenciales.
+          </p>
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs text-amber-300 font-semibold pt-1">
+            <span class="flex items-center gap-1.5">⚡ Registro Rápido en 2 Minutos</span>
+            <span class="text-slate-600">•</span>
+            <span class="flex items-center gap-1.5">🔒 Verificación Segura</span>
+            <span class="text-slate-600">•</span>
+            <span class="flex items-center gap-1.5">🎁 Bonos de Bienvenida</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row lg:flex-col gap-3 w-full sm:w-auto flex-shrink-0">
+          <a href="https://accounts.binance.com/register?ref=948971471" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black px-8 py-4 rounded-2xl shadow-xl shadow-amber-500/25 transition-all hover:scale-105 active:scale-95 text-base text-center">
+            <span>Crear Cuenta en Binance</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <p class="text-[11px] text-slate-400 text-center">Código de referido oficial: <strong class="text-amber-400 font-mono">luigix</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 bg-slate-950 border-t border-slate-800 text-slate-400 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <img src="landing/images/logo.png" class="w-6 h-6 object-contain">
+        <span class="font-bold text-white">TasaPlus</span>
+        <span class="text-slate-600">|</span>
+        <span>© 2026 TasaPlus. Todos los derechos reservados.</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="landing/calculadora/index.html" class="hover:text-emerald-400">Calculadora</a>
+        <a href="#sobre-nosotros" class="hover:text-emerald-400">Sobre Nosotros</a>
+        <a href="#guia-p2p" class="hover:text-amber-400">Guía P2P</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script de Animaciones Scroll Reveal & Ticker Landing -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+      fetchLandingTicker();
+      setInterval(fetchLandingTicker, 30000);
+    });
+
+    async function fetchLandingTicker() {
+      try {
+        const [usdRes, eurRes, btcRes, ethRes, bnbRes] = await Promise.allSettled([
+          fetch('https://ve.dolarapi.com/v1/dolares/oficial').then(r => r.json()),
+          fetch('https://ve.dolarapi.com/v1/euros/oficial').then(r => r.json()),
+          fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(r => r.json()),
+          fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT').then(r => r.json()),
+          fetch('https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT').then(r => r.json()),
+        ]);
+
+        let usdBcv = usdRes.status === 'fulfilled' ? usdRes.value.promedio : 814.69;
+        let eurBcv = eurRes.status === 'fulfilled' ? eurRes.value.promedio : 947.30;
+        let btcUsd = btcRes.status === 'fulfilled' ? parseFloat(btcRes.value.price) : 78500;
+        let ethUsd = ethRes.status === 'fulfilled' ? parseFloat(ethRes.value.price) : 2480;
+        let bnbUsd = bnbRes.status === 'fulfilled' ? parseFloat(bnbRes.value.price) : 750;
+
+        const fmt = (num) => new Intl.NumberFormat('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+
+        const textUsd = `${fmt(usdBcv)} Bs`;
+        const textEur = `${fmt(eurBcv)} Bs`;
+        const textUsdt = `${fmt(usdBcv * 1.005)} Bs`;
+        const textBtc = `$${fmt(btcUsd)} USD`;
+        const textEth = `$${fmt(ethUsd)} USD`;
+        const textBnb = `$${fmt(bnbUsd)} USD`;
+
+        document.querySelectorAll('#ticker-usd, #ticker-usd-dup').forEach(el => el.textContent = textUsd);
+        document.querySelectorAll('#ticker-eur, #ticker-eur-dup').forEach(el => el.textContent = textEur);
+        document.querySelectorAll('#ticker-usdt, #ticker-usdt-dup').forEach(el => el.textContent = textUsdt);
+        document.querySelectorAll('#ticker-btc, #ticker-btc-dup').forEach(el => el.textContent = textBtc);
+        document.querySelectorAll('#ticker-eth, #ticker-eth-dup').forEach(el => el.textContent = textEth);
+        document.querySelectorAll('#ticker-bnb, #ticker-bnb-dup').forEach(el => el.textContent = textBnb);
+
+        const heroUsd = document.getElementById('hero-usd-val');
+        if (heroUsd) heroUsd.textContent = textUsd;
+        const heroUsdt = document.getElementById('hero-usdt-val');
+        if (heroUsdt) heroUsdt.textContent = textUsdt;
+      } catch (err) {}
+    }
+  </script>
+</body>
+</html>
