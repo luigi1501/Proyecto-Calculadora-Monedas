@@ -20,13 +20,19 @@
         extend: {
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            fintechDark: '#020617',
+            fintechCard: '#0F172A',
+            emeraldAccent: '#10B981',
+            cyanAccent: '#06B6D4',
           }
         }
       }
     }
   </script>
 
-  <!-- Estilos Personalizados y Animaciones CSS -->
+  <!-- Estilos Personalizados -->
   <link rel="stylesheet" href="landing/css/landing.css">
 </head>
 <body class="antialiased selection:bg-emerald-500 selection:text-white">
@@ -36,7 +42,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl overflow-hidden bg-white/5 p-1 border border-white/10 flex items-center justify-center shadow-lg shadow-emerald-500/10 hover:scale-105 transition-transform">
-          <img src="landing/images/logo.png" alt="TasaPlus Logo" class="w-full h-full object-contain animate-bounce-slow">
+          <img src="landing/images/logo.png" alt="TasaPlus Logo" class="w-full h-full object-contain">
         </div>
         <span class="text-xl font-black text-white tracking-tight">
           Tasa<span class="text-emerald-400">Plus</span>
@@ -46,17 +52,17 @@
       <!-- Links Desktop -->
       <div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
         <a href="#sobre-nosotros" class="hover:text-emerald-400 transition-colors">Sobre TasaPlus</a>
-        <a href="#guia-p2p" class="hover:text-cyan-400 transition-colors">Guía Compras P2P</a>
+        <a href="#guia-p2p" class="hover:text-cyan-400 transition-colors">Guía P2P Segura</a>
         <a href="#referido-binance" class="text-amber-400 font-extrabold hover:text-amber-300 transition-colors flex items-center gap-1">🔥 Crear Cuenta Binance</a>
         <a href="#descargas" class="hover:text-cyan-400 transition-colors">Descargas</a>
       </div>
 
-      <!-- Botón Web App Primario para Abrir Calculadora -->
+      <!-- Botones de Acción -->
       <div class="flex items-center gap-3">
         <a href="https://accounts.binance.com/register?ref=948971471" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-amber-500/20 active:scale-95 text-xs">
           <span>Crear Cuenta Binance</span>
         </a>
-        <a href="landing/calculadora/index.html" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-500/25 active:scale-95 text-sm hover:shadow-emerald-400/40 hover:scale-105">
+        <a href="landing/calculadora/index.html" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-500/25 active:scale-95 text-sm hover:shadow-emerald-400/40">
           <span>Abrir Calculadora</span>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </a>
@@ -66,8 +72,8 @@
     <!-- Ticker Continuo de Tasas en Tiempo Real -->
     <div class="bg-slate-950/90 border-t border-slate-800/80 py-1.5 overflow-hidden relative">
       <div class="animate-marquee text-xs font-medium text-slate-300 flex items-center gap-8 whitespace-nowrap">
-        <div class="flex items-center gap-6" id="ticker-block-1">
-          <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> <strong>USD BCV:</strong> <span class="text-emerald-400 font-mono" id="ticker-usd">Cargando...</span></span>
+        <div class="flex items-center gap-6" id="ticker-content-1">
+          <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> <strong>USD BCV:</strong> <span class="text-emerald-400 font-mono" id="ticker-usd">Cargando...</span></span>
           <span class="text-slate-700">•</span>
           <span class="flex items-center gap-2"><strong>EUR BCV:</strong> <span class="text-cyan-400 font-mono" id="ticker-eur">Cargando...</span></span>
           <span class="text-slate-700">•</span>
@@ -79,8 +85,8 @@
           <span class="text-slate-700">•</span>
           <span class="flex items-center gap-2"><strong>BNB:</strong> <span class="text-amber-300 font-mono" id="ticker-bnb">Cargando...</span></span>
         </div>
-        <div class="flex items-center gap-6" id="ticker-block-2">
-          <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> <strong>USD BCV:</strong> <span class="text-emerald-400 font-mono" id="ticker-usd-dup">Cargando...</span></span>
+        <div class="flex items-center gap-6" id="ticker-content-2">
+          <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> <strong>USD BCV:</strong> <span class="text-emerald-400 font-mono" id="ticker-usd-dup">Cargando...</span></span>
           <span class="text-slate-700">•</span>
           <span class="flex items-center gap-2"><strong>EUR BCV:</strong> <span class="text-cyan-400 font-mono" id="ticker-eur-dup">Cargando...</span></span>
           <span class="text-slate-700">•</span>
@@ -100,85 +106,103 @@
   <section class="relative pt-44 pb-20 md:pt-56 md:pb-32 overflow-hidden">
     <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] bg-gradient-to-tr from-emerald-500/25 to-cyan-500/25 rounded-full blur-[120px] pointer-events-none animate-pulse-glow"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center lg:text-left">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         
-        <div class="lg:col-span-7 space-y-8 reveal">
+        <div class="lg:col-span-7 space-y-8 text-center lg:text-left reveal">
           <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/90 border border-slate-800 text-xs font-semibold text-emerald-400 shadow-inner hover:border-emerald-500/50 transition-colors">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            Precisión Cambiaria y Cotizaciones Oficiales al Instante
+            Precisión Financiera & Cotizaciones en Tiempo Real
           </div>
 
           <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white leading-[1.1]">
-            Monitorea la Tasa BCV y Criptomonedas <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">al Instante</span>
+            Monitorea Tasa BCV y Criptomonedas <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">al Instante</span>
           </h1>
 
           <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
-            TasaPlus es el monitor inteligente diseñado para unificar en un solo lugar las cotizaciones oficiales del <strong>Banco Central de Venezuela (USD/EUR)</strong> y los precios reales del mercado cripto <strong>(USDT, BNB, BTC, ETH)</strong>.
+            TasaPlus unifica las cotizaciones oficiales del <strong>BCV (USD/EUR)</strong> y las tasas del mercado cripto <strong>(USDT, BNB, BTC, ETH)</strong> en una plataforma inteligente con calculadora bidireccional interactiva.
           </p>
 
-          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-            <a href="landing/calculadora/index.html" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black px-8 py-4 rounded-2xl shadow-xl shadow-emerald-500/25 transition-all hover:scale-105 active:scale-95 text-base hover:shadow-emerald-400/40">
-              <span>Abrir Calculadora</span>
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <!-- Botones de Descarga Destacados -->
+          <div id="descargas" class="flex flex-col sm:flex-row flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+            <!-- Android APK -->
+            <a href="https://github.com/luigi1501/Proyecto-Calculadora-Monedas/releases" target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-6 py-4 rounded-2xl shadow-xl shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95 text-base hover:shadow-emerald-400/40">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.552 0 .9997.4482.9997.9993.0004.5511-.4477.9997-.9997.9997zm-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.552 0 .9997.4482.9997.9993 0 .5511-.4477.9997-.9997.9997zm11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1523-.5676.416.416 0 00-.568.1523l-2.0223 3.503c-1.631-.7436-3.4856-1.168-5.4619-1.168-1.9763 0-3.8309.4244-5.4623 1.168L3.6897 5.4469a.4163.4163 0 00-.568-.1523.4163.4163 0 00-.1523.5676l1.9973 3.4592C2.0886 11.2386.1384 14.5218.0039 18.358h23.9922c-.1345-3.8362-2.0847-7.1194-4.965-9.0366z"/></svg>
+              <span>Descargar Android (.APK)</span>
             </a>
 
-            <a href="#guia-p2p" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-amber-300 font-bold px-6 py-4 rounded-2xl border border-amber-500/30 transition-all text-base hover:border-amber-400 hover:scale-105">
-              <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-              <span>Guía Compras P2P</span>
+            <!-- Windows EXE -->
+            <a href="https://github.com/luigi1501/Proyecto-Calculadora-Monedas/releases" target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-slate-800 hover:bg-slate-700 text-white font-bold px-6 py-4 rounded-2xl border border-slate-700 transition-all hover:scale-105 active:scale-95 text-base hover:border-cyan-500/50">
+              <svg class="w-6 h-6 text-cyan-400" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-13.051-1.801"/></svg>
+              <span>Descargar Windows (.EXE)</span>
+            </a>
+
+            <!-- Abrir Calculadora Web -->
+            <a href="landing/calculadora/index.html" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-transparent hover:bg-white/5 text-cyan-400 font-bold px-5 py-4 rounded-2xl border border-cyan-500/30 transition-all text-base hover:border-cyan-400">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+              <span>Abrir Calculadora</span>
             </a>
           </div>
 
-          <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800/80">
+          <div class="grid grid-cols-3 gap-4 pt-4 text-center lg:text-left border-t border-slate-800/80">
             <div class="hover:scale-105 transition-transform">
               <p class="text-2xl font-black text-white">100%</p>
-              <p class="text-xs text-slate-400">Gratuito y Libre</p>
+              <p class="text-xs text-slate-400">Gratuito y sin anuncios</p>
             </div>
             <div class="hover:scale-105 transition-transform">
-              <p class="text-2xl font-black text-emerald-400">Real-Time</p>
-              <p class="text-xs text-slate-400">Sin Demoras</p>
+              <p class="text-2xl font-black text-emerald-400">PWA</p>
+              <p class="text-xs text-slate-400">Instalación en 1-Clic</p>
             </div>
             <div class="hover:scale-105 transition-transform">
-              <p class="text-2xl font-black text-cyan-400">P2P Seguro</p>
-              <p class="text-xs text-slate-400">Guía de Consejos</p>
+              <p class="text-2xl font-black text-cyan-400">.NET 10</p>
+              <p class="text-xs text-slate-400">Backend Ultra Rápido</p>
             </div>
           </div>
         </div>
 
         <div class="lg:col-span-5 reveal">
           <div class="relative animate-float">
-            <div class="absolute -inset-4 rounded-3xl bg-gradient-to-tr from-emerald-500 to-cyan-500 opacity-25 blur-2xl animate-pulse-glow"></div>
+            <div class="absolute -inset-4 rounded-3xl bg-gradient-to-tr from-emerald-500 to-cyan-500 opacity-30 blur-2xl animate-pulse-glow"></div>
             
-            <div class="relative glass-card p-7 rounded-3xl border border-slate-700/60 shadow-2xl space-y-6 glow-emerald text-left hover:border-emerald-500/50 transition-all">
+            <div class="relative glass-card p-6 rounded-3xl border border-slate-700/60 shadow-2xl glow-emerald space-y-5 hover:border-emerald-500/50 transition-all">
               <div class="flex items-center justify-between border-b border-slate-800 pb-4">
                 <div class="flex items-center gap-3">
-                  <img src="landing/images/logo.png" class="w-9 h-9 object-contain">
-                  <span class="font-black text-white text-lg">TasaPlus Monitor</span>
+                  <img src="landing/images/logo.png" class="w-8 h-8 object-contain">
+                  <span class="font-black text-white text-base">TasaPlus Web App</span>
                 </div>
                 <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/20 flex items-center gap-1.5">
                   <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> En Vivo
                 </span>
               </div>
 
-              <p class="text-slate-300 text-sm leading-relaxed">
-                TasaPlus actualiza las cotizaciones oficiales del BCV y Binance de forma automatizada, permitiendo realizar conversiones instantáneas con un solo clic.
-              </p>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800 hover:border-slate-700 transition-colors">
+                  <span class="text-[10px] text-slate-400 uppercase font-semibold">Dólar BCV</span>
+                  <p class="text-lg font-black text-white mt-1">$1.00 USD</p>
+                  <p class="text-xs font-bold text-emerald-400" id="card-usd-val">Cargando...</p>
+                </div>
+                <div class="bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800 hover:border-slate-700 transition-colors">
+                  <span class="text-[10px] text-slate-400 uppercase font-semibold">Bitcoin</span>
+                  <p class="text-lg font-black text-amber-400 mt-1" id="card-btc-usd">$88.500 USD</p>
+                  <p class="text-xs font-bold text-slate-300" id="card-btc-ves">Cargando...</p>
+                </div>
+              </div>
 
               <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
                 <div class="flex justify-between items-center text-xs">
-                  <span class="text-slate-400 font-medium">Cotización BCV Oficial</span>
-                  <span class="text-emerald-400 font-mono" id="hero-usd-val">Cargando...</span>
+                  <span class="text-slate-400">Calculadora Bidireccional</span>
+                  <span class="text-cyan-400 font-mono" id="sim-rate">1 USDT = -- Bs</span>
                 </div>
                 <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800">
-                  <span class="text-sm font-bold text-slate-300">Tasa USDT (Binance P2P)</span>
-                  <span class="text-base font-black text-emerald-400" id="hero-usdt-val">Cargando...</span>
+                  <span class="text-sm font-bold text-slate-300">100 USDT</span>
+                  <span class="text-base font-black text-emerald-400" id="sim-calc-ves">Calculando...</span>
                 </div>
               </div>
 
               <div class="text-center pt-2">
-                <a href="landing/calculadora/index.html" class="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3.5 rounded-xl text-xs transition-all hover:scale-102 shadow-lg shadow-emerald-500/20">
-                  <span>Ir a la Calculadora Completa</span>
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <a href="landing/calculadora/index.html" class="text-xs font-bold text-cyan-400 hover:text-cyan-300 hover:underline inline-flex items-center gap-1 transition-colors">
+                  <span>Probar calculadora completa</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>
               </div>
             </div>
@@ -189,17 +213,16 @@
     </div>
   </section>
 
-  <!-- Sección 1: ¿De qué trata TasaPlus y Por qué Nació? -->
+  <!-- Sección: Sobre TasaPlus -->
   <section id="sobre-nosotros" class="py-20 bg-slate-950/60 border-y border-slate-800/80">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-      
       <div class="text-center max-w-3xl mx-auto space-y-4 reveal">
-        <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-widest">¿De qué trata TasaPlus?</h2>
+        <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-widest">Sobre TasaPlus</h2>
         <h3 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
-          Información Financiera Transparente y al Alcance de Todos
+          Transparencia y Rapidez para Comerciantes y Usuarios
         </h3>
         <p class="text-slate-400 text-base leading-relaxed">
-          TasaPlus es un proyecto creado para resolver la dispersión de información cambiaria. En el día a día, comerciantes, emprendedores y usuarios deben consultar múltiples fuentes para conocer el precio del dólar oficial, el euro y las criptomonedas. TasaPlus unifica todo en un solo lugar con exactitud matemática y actualización continua.
+          TasaPlus nace con el propósito de resolver la dispersión de información económica, ofreciendo en un solo lugar los valores oficiales del Banco Central de Venezuela y los precios del mercado P2P cripto.
         </p>
       </div>
 
@@ -234,110 +257,70 @@
           </p>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- Sección 2: Misión y Visión -->
-  <section id="mision-vision" class="py-20 relative">
+  <!-- Sección Educativa: Guía P2P -->
+  <section id="guia-p2p" class="py-20 relative">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-      
-      <div class="text-center max-w-3xl mx-auto space-y-3 reveal">
-        <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Nuestros Pilares</h2>
-        <h3 class="text-3xl font-black text-white tracking-tight">Misión y Visión de TasaPlus</h3>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="glass-card p-8 rounded-3xl border border-slate-800 space-y-4 hover:border-emerald-500/40 hover:-translate-y-2 transition-all duration-300 reveal">
-          <div class="flex items-center gap-3">
-            <div class="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </div>
-            <h4 class="text-2xl font-black text-white">Nuestra Misión</h4>
-          </div>
-          <p class="text-slate-300 text-sm leading-relaxed">
-            Proporcionar a los usuarios y comerciantes una plataforma intuitiva, ágil y precisa para la consulta y conversión de divisas y criptomonedas, garantizando el acceso a la información oficial y de mercado sin fricciones ni cobros ocultos.
-          </p>
-        </div>
-
-        <div class="glass-card p-8 rounded-3xl border border-slate-800 space-y-4 hover:border-cyan-500/40 hover:-translate-y-2 transition-all duration-300 reveal">
-          <div class="flex items-center gap-3">
-            <div class="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-            </div>
-            <h4 class="text-2xl font-black text-white">Nuestra Visión</h4>
-          </div>
-          <p class="text-slate-300 text-sm leading-relaxed">
-            Consolidarnos como el estándar de referencia independiente en monitoreo de cotizaciones y herramientas financieras, expandiendo la compatibilidad multiplataforma y fomentando la educación en seguridad financiera.
-          </p>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Sección 3: Consejos para Compras P2P Seguras en Binance -->
-  <section id="guia-p2p" class="py-20 bg-slate-950/60 border-t border-slate-800/80">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-      
       <div class="text-center max-w-3xl mx-auto space-y-4 reveal">
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-bold">
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.4L20.6 19H3.4L12 5.4zM11 10h2v5h-2v-5zm0 6h2v2h-2v-2z"/></svg>
           Guía de Seguridad Financiera
         </div>
         <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
-          Consejos Fundamentales para Comprar y Vender Seguro en Binance P2P
+          ¿Cómo comerciar seguro en Binance P2P?
         </h2>
         <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
-          Al realizar operaciones de intercambio en el mercado Peer-to-Peer (P2P), la seguridad es la máxima prioridad. Sigue de manera estricta las siguientes recomendaciones:
+          Sigue estas recomendaciones de seguridad esenciales al realizar intercambios de criptomonedas a moneda local en Binance P2P.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="glass-card p-6 rounded-3xl border border-slate-800 flex items-start gap-4 hover:border-amber-500/40 hover:-translate-y-1 transition-all reveal">
-          <div class="p-3 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex-shrink-0 font-black text-lg">
+        <div class="glass-card p-6 rounded-3xl border border-slate-800 flex items-start gap-4 hover:border-amber-500/40 transition-all hover:-translate-y-1 reveal">
+          <div class="p-3 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex-shrink-0">
             01
           </div>
           <div class="space-y-1">
-            <h3 class="text-lg font-bold text-white">Verificación del Comerciante</h3>
+            <h3 class="text-lg font-bold text-white">1. Verificación de Comerciante</h3>
             <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-              Prioriza comerciar con usuarios que tengan la <strong>insignia amarilla de Comerciante Verificado</strong> o el estatus <em>Pro</em>. Han superado exigentes requisitos de verificación de identidad.
+              Selecciona comerciantes con la <strong>insignia amarilla de Verificado</strong> o el estado de comerciante <em>Pro</em>.
             </p>
           </div>
         </div>
 
-        <div class="glass-card p-6 rounded-3xl border border-slate-800 flex items-start gap-4 hover:border-emerald-500/40 hover:-translate-y-1 transition-all reveal">
-          <div class="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex-shrink-0 font-black text-lg">
+        <div class="glass-card p-6 rounded-3xl border border-slate-800 flex items-start gap-4 hover:border-emerald-500/40 transition-all hover:-translate-y-1 reveal">
+          <div class="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex-shrink-0">
             02
           </div>
           <div class="space-y-1">
-            <h3 class="text-lg font-bold text-white">Porcentaje de Finalización Alto</h3>
+            <h3 class="text-lg font-bold text-white">2. Porcentaje de Finalización</h3>
             <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-              Elige contrapartes con un <strong>porcentaje de órdenes completadas mayor al 98%</strong> y una trayectoria de más de 100 operaciones en los últimos 30 días.
+              Opera únicamente con contrapartes que tengan un <strong>porcentaje de órdenes completadas mayor al 98%</strong>.
             </p>
           </div>
         </div>
 
-        <div class="glass-card p-6 rounded-3xl border border-slate-800 flex items-start gap-4 hover:border-rose-500/40 hover:-translate-y-1 transition-all reveal">
-          <div class="p-3 rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20 flex-shrink-0 font-black text-lg">
+        <div class="glass-card p-6 rounded-3xl border border-slate-800 flex items-start gap-4 hover:border-rose-500/40 transition-all hover:-translate-y-1 reveal">
+          <div class="p-3 rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20 flex-shrink-0">
             03
           </div>
           <div class="space-y-1">
-            <h3 class="text-lg font-bold text-white">Regla de Cero Pagos de Terceros</h3>
+            <h3 class="text-lg font-bold text-white">3. Cero Pagos de Terceros</h3>
             <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-              El titular de la cuenta bancaria de origen o destino debe coincidir <strong>exactamente con el nombre registrado en la cuenta Binance</strong>. Jamás aceptes transferencias desde cuentas de terceros.
+              Verifica estrictamente que el nombre de la cuenta bancaria coincida con el <strong>titular de la cuenta de Binance</strong>.
             </p>
           </div>
         </div>
 
-        <div class="glass-card p-6 rounded-3xl border border-slate-800 flex items-start gap-4 hover:border-cyan-500/40 hover:-translate-y-1 transition-all reveal">
-          <div class="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex-shrink-0 font-black text-lg">
+        <div class="glass-card p-6 rounded-3xl border border-slate-800 flex items-start gap-4 hover:border-cyan-500/40 transition-all hover:-translate-y-1 reveal">
+          <div class="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex-shrink-0">
             04
           </div>
           <div class="space-y-1">
-            <h3 class="text-lg font-bold text-white">Verificación Directa del Saldo Bancario</h3>
+            <h3 class="text-lg font-bold text-white">4. Verificación de Saldo Real</h3>
             <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
-              No liberes las criptomonedas basándote en capturas de pantalla ni mensajes de texto SMS. <strong>Entra directamente a tu banca en línea</strong> y confirma la disponibilidad del dinero.
+              Nunca liberes las criptomonedas sin antes <strong>ingresar directamente a tu aplicación bancaria</strong>.
             </p>
           </div>
         </div>
@@ -383,23 +366,24 @@
   </section>
 
   <!-- Footer -->
-  <footer class="py-8 bg-slate-950 border-t border-slate-800 text-slate-400 text-xs">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+  <footer class="py-12 bg-slate-950 border-t border-slate-800 text-slate-400 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
       <div class="flex items-center gap-3">
-        <img src="landing/images/logo.png" class="w-6 h-6 object-contain">
-        <span class="font-bold text-white">TasaPlus</span>
+        <img src="landing/images/logo.png" class="w-7 h-7 object-contain">
+        <span class="font-bold text-white text-sm">TasaPlus</span>
         <span class="text-slate-600">|</span>
         <span>© 2026 TasaPlus. Todos los derechos reservados.</span>
       </div>
+
       <div class="flex items-center gap-6">
-        <a href="landing/calculadora/index.html" class="hover:text-emerald-400">Calculadora</a>
-        <a href="#sobre-nosotros" class="hover:text-emerald-400">Sobre Nosotros</a>
-        <a href="#guia-p2p" class="hover:text-amber-400">Guía P2P</a>
+        <a href="landing/calculadora/index.html" class="hover:text-emerald-400 transition-colors">Calculadora</a>
+        <a href="https://github.com/luigi1501/Proyecto-Calculadora-Monedas/releases" target="_blank" class="hover:text-cyan-400 transition-colors">APK Android</a>
+        <a href="https://github.com/luigi1501/Proyecto-Calculadora-Monedas/releases" target="_blank" class="hover:text-cyan-400 transition-colors">Ejecutable Windows</a>
       </div>
     </div>
   </footer>
 
-  <!-- Script de Animaciones Scroll Reveal & Ticker Landing -->
+  <!-- Script Ticker -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const observer = new IntersectionObserver((entries) => {
@@ -411,12 +395,11 @@
       }, { threshold: 0.1 });
 
       document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-      fetchLandingTicker();
-      setInterval(fetchLandingTicker, 30000);
+      fetchLandingRates();
+      setInterval(fetchLandingRates, 30000);
     });
 
-    async function fetchLandingTicker() {
+    async function fetchLandingRates() {
       try {
         const [usdRes, eurRes, btcRes, ethRes, bnbRes] = await Promise.allSettled([
           fetch('https://ve.dolarapi.com/v1/dolares/oficial').then(r => r.json()),
@@ -426,11 +409,11 @@
           fetch('https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT').then(r => r.json()),
         ]);
 
-        let usdBcv = usdRes.status === 'fulfilled' ? usdRes.value.promedio : 814.69;
-        let eurBcv = eurRes.status === 'fulfilled' ? eurRes.value.promedio : 947.30;
-        let btcUsd = btcRes.status === 'fulfilled' ? parseFloat(btcRes.value.price) : 78500;
-        let ethUsd = ethRes.status === 'fulfilled' ? parseFloat(ethRes.value.price) : 2480;
-        let bnbUsd = bnbRes.status === 'fulfilled' ? parseFloat(bnbRes.value.price) : 750;
+        let usdBcv = usdRes.status === 'fulfilled' ? usdRes.value.promedio : 807.39;
+        let eurBcv = eurRes.status === 'fulfilled' ? eurRes.value.promedio : 945.50;
+        let btcUsd = btcRes.status === 'fulfilled' ? parseFloat(btcRes.value.price) : 88500;
+        let ethUsd = ethRes.status === 'fulfilled' ? parseFloat(ethRes.value.price) : 3100;
+        let bnbUsd = bnbRes.status === 'fulfilled' ? parseFloat(bnbRes.value.price) : 620;
 
         const fmt = (num) => new Intl.NumberFormat('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
 
@@ -448,10 +431,17 @@
         document.querySelectorAll('#ticker-eth, #ticker-eth-dup').forEach(el => el.textContent = textEth);
         document.querySelectorAll('#ticker-bnb, #ticker-bnb-dup').forEach(el => el.textContent = textBnb);
 
-        const heroUsd = document.getElementById('hero-usd-val');
-        if (heroUsd) heroUsd.textContent = textUsd;
-        const heroUsdt = document.getElementById('hero-usdt-val');
-        if (heroUsdt) heroUsdt.textContent = textUsdt;
+        const cardUsd = document.getElementById('card-usd-val');
+        if (cardUsd) cardUsd.textContent = textUsd;
+        const cardBtcUsd = document.getElementById('card-btc-usd');
+        if (cardBtcUsd) cardBtcUsd.textContent = `$${fmt(btcUsd)} USD`;
+        const cardBtcVes = document.getElementById('card-btc-ves');
+        if (cardBtcVes) cardBtcVes.textContent = `${fmt(btcUsd * usdBcv)} Bs`;
+
+        const simRate = document.getElementById('sim-rate');
+        if (simRate) simRate.textContent = `1 USDT = ${textUsd}`;
+        const simCalc = document.getElementById('sim-calc-ves');
+        if (simCalc) simCalc.textContent = `${fmt(100 * usdBcv)} Bs`;
       } catch (err) {}
     }
   </script>
