@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TasaPlus - Cotizaciones & Calculadora en Tiempo Real</title>
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Estilos Personalizados y Animaciones -->
+  <link rel="stylesheet" href="../css/landing.css">
+</head>
+<body class="antialiased select-none pb-12">
+
+  <!-- Header Comercial de TasaPlus -->
+  <header class="sticky top-0 z-50 glass-nav border-b border-white/10 px-4 py-3.5 mb-6">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      
+      <!-- Logo e Identidad -->
+      <a href="../index.html" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
+        <div class="w-10 h-10 rounded-xl overflow-hidden bg-white/5 p-1 border border-white/10 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+          <img src="../images/logo.png" alt="TasaPlus Logo" class="w-full h-full object-contain animate-bounce-slow">
+        </div>
+        <div>
+          <h1 class="text-lg font-black text-white tracking-tight flex items-center gap-1">
+            Tasa<span class="text-emerald-400">Plus</span>
+          </h1>
+          <p class="text-xs text-slate-400 font-mono" id="last-updated">
+            Refresco: --:--:--
+          </p>
+        </div>
+      </a>
+
+      <!-- Acciones de Header -->
+      <div class="flex items-center gap-2">
+        <a href="../index.html" class="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-extrabold transition-all flex items-center gap-1.5 hover:scale-105" title="Ver Landing Page">
+          <span>Landing</span>
+        </a>
+
+        <button onclick="startTour()" class="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-emerald-400 font-extrabold flex items-center justify-center text-sm hover:scale-105" title="Tour Guiado">
+          ?
+        </button>
+
+        <button onclick="fetchRates()" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all active:scale-95" title="Actualizar Tasas">
+          <span id="refresh-icon" class="inline-block">🔄</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal de la App Calculadora -->
+  <main class="max-w-4xl mx-auto px-4 space-y-6">
+
+    <!-- Grid de Tarjetas de Cotización -->
+    <section class="reveal">
+      <div class="flex items-center justify-between mb-3 px-1">
+        <h2 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+          <span>Cotizaciones del Día (Toca una para seleccionar)</span>
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        </h2>
+        <span class="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-mono">
+          Binance & BCV Real-Time
+        </span>
+      </div>
+
+      <div id="currency-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Renderizado dinámico desde C# Backend API -->
+      </div>
+    </section>
+
+    <!-- Calculadora Bidireccional de Conversión -->
+    <section id="section-calculator" class="glass-card rounded-3xl p-5 sm:p-7 border border-white/10 shadow-2xl relative overflow-hidden space-y-5 reveal">
+      <div class="absolute -right-16 -top-16 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none animate-pulse-glow"></div>
+
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div>
+          <h2 class="text-lg sm:text-xl font-black text-white tracking-tight">
+            Calculadora Inteligente
+          </h2>
+          <p class="text-xs text-slate-400 font-medium">Selecciona la moneda o toca cualquier tarjeta arriba</p>
+        </div>
+        
+        <div class="w-44 sm:w-48">
+          <select id="select-currency" onchange="onSelectCurrencyChange()" class="w-full bg-slate-900 border border-emerald-500/40 text-emerald-300 font-bold text-xs rounded-xl px-3 py-2 focus:outline-none cursor-pointer">
+            <option value="USD">USD - Dólar BCV</option>
+            <option value="EUR">EUR - Euro BCV</option>
+            <option value="USDT">USDT - Binance P2P</option>
+            <option value="BNB">BNB - Binance Coin</option>
+            <option value="BTC">BTC - Bitcoin</option>
+            <option value="ETH">ETH - Ethereum</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Campo 1: Moneda Extranjera / Cripto -->
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">
+            Monto Moneda Extranjera / Cripto
+          </label>
+          <div class="relative flex items-center">
+            <input type="text" inputmode="decimal" id="input-foreign" value="1,00" placeholder="0,00" oninput="onForeignInput()" onfocus="onForeignFocus()" onblur="onForeignBlur()" class="w-full bg-slate-900/90 border border-slate-700 focus:border-emerald-500 rounded-2xl py-3.5 pl-4 pr-32 text-white text-xl font-extrabold focus:outline-none font-mono">
+            <div class="absolute right-3 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl">
+              <span id="foreign-symbol-badge" class="font-extrabold text-xs text-emerald-400">$ USD</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Indicador de Tasa Aplicada -->
+        <div class="flex items-center justify-between py-1">
+          <div class="h-px bg-slate-800 flex-1"></div>
+          <span id="applied-rate" class="px-3 text-xs font-bold text-emerald-400 bg-slate-900 border border-slate-800 py-1 rounded-full mx-2 font-mono">
+            1 USD = 0,00 Bs
+          </span>
+          <div class="h-px bg-slate-800 flex-1"></div>
+        </div>
+
+        <!-- Campo 2: Bolívares (VES) -->
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">
+            Monto en Bolívares (VES)
+          </label>
+          <div class="relative flex items-center">
+            <input type="text" inputmode="decimal" id="input-ves" placeholder="0,00" oninput="onVesInput()" onfocus="onVesFocus()" onblur="onVesBlur()" class="w-full bg-slate-900/90 border border-slate-700 focus:border-emerald-500 rounded-2xl py-3.5 pl-4 pr-24 text-emerald-400 text-xl font-black focus:outline-none font-mono">
+            <div class="absolute right-3 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl">
+              <span class="font-extrabold text-xs text-emerald-400">Bs VES</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones de Calculadora -->
+      <div class="mt-6 flex gap-3">
+        <button onclick="generateReceiptModal()" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black py-3.5 px-4 rounded-2xl transition-all shadow-lg shadow-emerald-500/25 active:scale-98 flex items-center justify-center gap-2 text-sm hover:scale-102">
+          <span>Compartir Comprobante</span>
+        </button>
+        <button onclick="resetCalculator()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-3.5 rounded-2xl border border-slate-700 transition-all text-sm hover:scale-105" title="Limpiar Calculadora">
+          🧹
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de Comprobante / Compartir -->
+  <div id="receipt-modal-container" class="fixed inset-0 z-[140] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="glass-card max-w-sm w-full rounded-3xl p-6 border border-emerald-500/40 shadow-2xl space-y-6 text-white relative animate-scale-up">
+      <button onclick="closeReceiptModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">✕</button>
+      
+      <div class="text-center space-y-2 pt-2">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 p-2 mx-auto flex items-center justify-center">
+          <span class="text-2xl font-black text-emerald-400">$</span>
+        </div>
+        <h3 class="text-xl font-black">Comprobante TasaPlus</h3>
+        <p class="text-xs text-slate-400 font-mono" id="modal-timestamp">--:--:-- • Cotización Oficial</p>
+      </div>
+
+      <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800 space-y-3 text-xs">
+        <div class="flex justify-between text-slate-400"><span>Moneda:</span><span class="font-bold text-white" id="modal-currency">USD</span></div>
+        <div class="flex justify-between text-slate-400"><span>Monto Operación:</span><span class="font-black text-emerald-400" id="modal-foreign">1.00 $</span></div>
+        <div class="flex justify-between text-slate-400"><span>Tasa Aplicada:</span><span class="font-mono text-cyan-400" id="modal-rate">1 USD = 0.00 Bs</span></div>
+        <div class="border-t border-slate-800 pt-2 flex justify-between text-slate-300 font-bold"><span>Total Bolívares:</span><span class="text-base font-black text-emerald-300" id="modal-ves">0.00 Bs</span></div>
+      </div>
+
+      <div class="space-y-2">
+        <button onclick="triggerWebPngDownload()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3.5 rounded-xl flex items-center justify-center gap-2 text-xs transition-all shadow-lg shadow-emerald-500/25 active:scale-98">
+          <span>📸 Compartir / Descargar Imagen (PNG HD)</span>
+        </button>
+
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button onclick="shareWhatsApp()" class="bg-emerald-700/40 hover:bg-emerald-600/50 border border-emerald-500/30 text-emerald-300 font-extrabold py-2.5 rounded-xl flex items-center justify-center gap-1.5 text-xs transition-all">
+            <span>💬 WhatsApp</span>
+          </button>
+          <button onclick="shareTelegram()" class="bg-cyan-700/40 hover:bg-cyan-600/50 border border-cyan-500/30 text-cyan-300 font-extrabold py-2.5 rounded-xl flex items-center justify-center gap-1.5 text-xs transition-all">
+            <span>✈️ Telegram</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tour Guiado Modal -->
+  <div id="tour-modal" class="fixed inset-0 z-[150] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-3xl p-6 border border-emerald-500/40 shadow-2xl space-y-6 text-white animate-scale-up">
+      <div class="flex items-center justify-between">
+        <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-extrabold text-xs" id="tour-step-badge">Paso 1 de 4</span>
+        <button onclick="closeTour()" class="text-xs text-slate-400 hover:text-white font-bold">Omitir</button>
+      </div>
+      <div class="space-y-3">
+        <h3 class="text-xl font-black" id="tour-step-title">¡Bienvenido a TasaPlus!</h3>
+        <p class="text-sm text-slate-300 leading-relaxed" id="tour-step-desc">Monitor inteligente y calculadora en tiempo real.</p>
+      </div>
+      <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+        <button onclick="prevTourStep()" id="btn-tour-prev" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">Anterior</button>
+        <button onclick="nextTourStep()" id="btn-tour-next" class="px-5 py-2.5 rounded-xl bg-emerald-500 text-slate-950 font-black text-xs">Siguiente</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lógica de Conexión a la API C# del Backend y Animaciones -->
+  <script>
+    // ── Helpers de Formato con separadores de miles (ej: 2.456.821,78) ──
+    function parseAmount(str) {
+      // Acepta: "1.234,56" o "1234,56" o "1234.56"
+      if (!str) return 0;
+      // Si tiene coma, asumimos coma=decimal y punto=miles
+      const hasComma = str.includes(',');
+      const dotCount = (str.match(/\./g) || []).length;
+      let normalized;
+      if (hasComma) {
+        normalized = str.replace(/\./g, '').replace(',', '.');
+      } else if (dotCount > 1) {
+        // múltiples puntos → separadores de miles
+        normalized = str.replace(/\./g, '');
+      } else {
+        normalized = str;
+      }
+      return parseFloat(normalized) || 0;
+    }
+
+    function formatVES(num) {
+      return num.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function formatForeign(num) {
+      return num.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+    }
+    function formatRate(num) {
+      return num.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    let currentRates = [];
+    let selectedRate = null;
+
+    async function fetchRates() {
+      const refreshIcon = document.getElementById('refresh-icon');
+      if (refreshIcon) refreshIcon.classList.add('animate-spin');
+
+      try {
+        const res = await fetch('/api/tasas');
+        if (res.ok) {
+          currentRates = await res.json();
+          renderCurrencyCards();
+          updateSelectedCurrency();
+
+          if (currentRates.length > 0 && currentRates[0].fechaActualizacion) {
+            const parts = currentRates[0].fechaActualizacion.split(' ');
+            const timeStr = parts.length > 1 ? parts[1] : currentRates[0].fechaActualizacion;
+            document.getElementById('last-updated').textContent = 'Refresco: ' + timeStr;
+          }
+        }
+      } catch (err) {
+        console.warn('Error conectando a API C#:', err);
+      } finally {
+        if (refreshIcon) refreshIcon.classList.remove('animate-spin');
+      }
+    }
+
+    function renderCurrencyCards() {
+      const container = document.getElementById('currency-cards');
+      if (!container) return;
+      container.innerHTML = '';
+
+      currentRates.forEach(rate => {
+        const isSelected = selectedRate && selectedRate.code === rate.code;
+        const card = document.createElement('div');
+        card.className = `glass-card rounded-2xl p-4 border transition-all duration-300 cursor-pointer hover:-translate-y-1 ${isSelected ? 'border-emerald-500 bg-emerald-950/20 shadow-lg shadow-emerald-500/10' : 'border-slate-800 hover:border-slate-700'}`;
+        card.onclick = () => selectCurrency(rate.code);
+
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <span class="text-xs font-bold text-slate-400">${rate.name}</span>
+              <h3 class="text-lg font-black text-white">${rate.code}</h3>
+            </div>
+            <span class="text-xs font-extrabold px-2 py-1 rounded-lg ${rate.type === 'crypto' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">
+              ${rate.symbol}
+            </span>
+          </div>
+          <div class="space-y-1">
+            <p class="text-xl font-black text-emerald-400 font-mono">${rate.formattedVes}</p>
+            ${rate.type === 'crypto' ? `<p class="text-xs text-slate-400 font-mono">1 ${rate.code} = ${rate.formattedUsd}</p>` : ''}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function selectCurrency(code) {
+      document.getElementById('select-currency').value = code;
+      updateSelectedCurrency();
+    }
+
+    function onSelectCurrencyChange() {
+      updateSelectedCurrency();
+    }
+
+    function updateSelectedCurrency() {
+      const code = document.getElementById('select-currency').value;
+      selectedRate = currentRates.find(r => r.code === code) || currentRates[0];
+
+      if (selectedRate) {
+        document.getElementById('foreign-symbol-badge').textContent = `${selectedRate.symbol} ${selectedRate.code}`;
+        document.getElementById('applied-rate').textContent = `1 ${selectedRate.code} = ${formatRate(selectedRate.rateVes)} Bs`;
+        onForeignInput();
+      }
+      renderCurrencyCards();
+    }
+
+    function onForeignInput() {
+      if (!selectedRate || selectedRate.rateVes <= 0) return;
+      const raw = document.getElementById('input-foreign').value;
+      const foreignVal = parseAmount(raw);
+      const vesVal = foreignVal * selectedRate.rateVes;
+      document.getElementById('input-ves').value = formatVES(vesVal);
+    }
+
+    function onForeignFocus() {
+      // Al enfocar mostrar sin separadores para editar facil
+      const raw = document.getElementById('input-foreign').value;
+      const num = parseAmount(raw);
+      document.getElementById('input-foreign').value = num ? num.toString().replace('.', ',') : '';
+    }
+
+    function onForeignBlur() {
+      const raw = document.getElementById('input-foreign').value;
+      const num = parseAmount(raw);
+      document.getElementById('input-foreign').value = formatForeign(num);
+    }
+
+    function onVesInput() {
+      if (!selectedRate || selectedRate.rateVes <= 0) return;
+      const raw = document.getElementById('input-ves').value;
+      const vesVal = parseAmount(raw);
+      const foreignVal = vesVal / selectedRate.rateVes;
+      document.getElementById('input-foreign').value = formatForeign(foreignVal);
+    }
+
+    function onVesFocus() {
+      const raw = document.getElementById('input-ves').value;
+      const num = parseAmount(raw);
+      document.getElementById('input-ves').value = num ? num.toString().replace('.', ',') : '';
+    }
+
+    function onVesBlur() {
+      const raw = document.getElementById('input-ves').value;
+      const num = parseAmount(raw);
+      document.getElementById('input-ves').value = formatVES(num);
+    }
+
+    function resetCalculator() {
+      document.getElementById('input-foreign').value = '1,00';
+      onForeignInput();
+    }
+
+    function generateReceiptModal() {
+      if (!selectedRate) return;
+      const foreignVal = parseAmount(document.getElementById('input-foreign').value) || 1;
+      const vesVal = parseAmount(document.getElementById('input-ves').value) || 0;
+      const timeStr = document.getElementById('last-updated').textContent.replace('Refresco: ', '');
+
+      document.getElementById('modal-currency').textContent = `${selectedRate.name} (${selectedRate.code})`;
+      document.getElementById('modal-foreign').textContent = `${formatForeign(foreignVal)} ${selectedRate.symbol}`;
+      document.getElementById('modal-rate').textContent = `1 ${selectedRate.code} = ${formatRate(selectedRate.rateVes)} Bs`;
+      document.getElementById('modal-ves').textContent = `${formatVES(vesVal)} Bs`;
+      document.getElementById('modal-timestamp').textContent = `${timeStr} • Cotización Oficial`;
+
+      const container = document.getElementById('receipt-modal-container');
+      container.classList.remove('hidden');
+      container.classList.add('flex');
+    }
+
+    function closeReceiptModal() {
+      const container = document.getElementById('receipt-modal-container');
+      container.classList.add('hidden');
+      container.classList.remove('flex');
+    }
+
+    function getSummaryText() {
+      const foreignVal = parseAmount(document.getElementById('input-foreign').value) || 1;
+      const vesVal = parseAmount(document.getElementById('input-ves').value) || 0;
+      const timeStr = document.getElementById('last-updated').textContent.replace('Refresco: ', '');
+      return `📊 *Comprobante TasaPlus*\n` +
+             `🔹 Moneda: ${selectedRate.name} (${selectedRate.code})\n` +
+             `💵 Monto: ${formatForeign(foreignVal)} ${selectedRate.symbol}\n` +
+             `⚡ Tasa: 1 ${selectedRate.code} = ${formatRate(selectedRate.rateVes)} Bs\n` +
+             `💰 Total: ${formatVES(vesVal)} Bs\n` +
+             `🕒 Hora: ${timeStr}\n` +
+             `Calculado con TasaPlus 🚀`;
+    }
+
+    function triggerWebPngDownload() {
+      if (!selectedRate) return;
+      const foreignVal = parseAmount(document.getElementById('input-foreign').value) || 1;
+      const vesVal = parseAmount(document.getElementById('input-ves').value) || 0;
+      const timeStr = document.getElementById('last-updated').textContent.replace('Refresco: ', '');
+      const rateStr = `1 ${selectedRate.code} = ${formatRate(selectedRate.rateVes)} Bs`;
+
+      downloadComprobantePng(
+        `${selectedRate.name} (${selectedRate.code})`,
+        formatForeign(foreignVal),
+        selectedRate.symbol,
+        rateStr,
+        formatVES(vesVal),
+        timeStr
+      );
+    }
+
+    window.downloadComprobantePng = async function(name, amount, symbol, rateStr, vesTotal, timestamp) {
+      try {
+        const canvas = document.createElement('canvas');
+        const width = 800;
+        const height = 950;
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+
+        // Background Dark Gradient
+        const grad = ctx.createLinearGradient(0, 0, 0, height);
+        grad.addColorStop(0, '#020617');
+        grad.addColorStop(1, '#0f172a');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, width, height);
+
+        // Card Border Outer Glow
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#10b981';
+        ctx.shadowColor = '#10b981';
+        ctx.shadowBlur = 20;
+        
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(30, 30, width - 60, height - 60, 32);
+        } else {
+          ctx.rect(30, 30, width - 60, height - 60);
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // Header TasaPlus Logo
+        ctx.fillStyle = '#10b981';
+        ctx.font = '900 44px Inter, system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('TasaPlus', width / 2, 110);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '500 20px Inter, system-ui, -apple-system, sans-serif';
+        ctx.fillText('Comprobante de Cotización en Tiempo Real', width / 2, 150);
+
+        // Divider
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(80, 190);
+        ctx.lineTo(width - 80, 190);
+        ctx.stroke();
+
+        // Line 1: Cotización
+        ctx.textAlign = 'left';
+        ctx.font = '700 22px Inter, system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('COTIZACIÓN / MONEDA:', 80, 260);
+        
+        ctx.textAlign = 'right';
+        ctx.font = '900 24px Inter, system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(name, width - 80, 260);
+
+        // Line 2: Monto
+        ctx.textAlign = 'left';
+        ctx.font = '700 22px Inter, system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('MONTO OPERACIÓN:', 80, 340);
+        
+        ctx.textAlign = 'right';
+        ctx.font = '900 28px Inter, system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#10b981';
+        ctx.fillText(amount + ' ' + symbol, width - 80, 340);
+
+        // Line 3: Tasa
+        ctx.textAlign = 'left';
+        ctx.font = '700 22px Inter, system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('TASA APLICADA:', 80, 420);
+        
+        ctx.textAlign = 'right';
+        ctx.font = 'bold 24px monospace, sans-serif';
+        ctx.fillStyle = '#22d3ee';
+        ctx.fillText(rateStr, width - 80, 420);
+
+        // Inner Card for Total
+        ctx.fillStyle = '#020617';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(70, 480, width - 140, 180, 24);
+        } else {
+          ctx.rect(70, 480, width - 140, 180);
+        }
+        ctx.fill();
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.textAlign = 'left';
+        ctx.font = '800 22px Inter, system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('TOTAL EN BOLÍVARES:', 100, 540);
+
+        ctx.textAlign = 'right';
+        ctx.font = '900 48px monospace, sans-serif';
+        ctx.fillStyle = '#34d399';
+        ctx.fillText(vesTotal + ' Bs', width - 100, 610);
+
+        // Footer Watermark
+        ctx.textAlign = 'center';
+        ctx.font = '500 18px Inter, system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Fecha y Hora: ' + timestamp, width / 2, 730);
+
+        ctx.fillStyle = '#10b981';
+        ctx.font = '700 18px Inter, system-ui, -apple-system, sans-serif';
+        ctx.fillText('Generado con TasaPlus • C# .NET 10', width / 2, 770);
+
+        canvas.toBlob(async (blob) => {
+          if (!blob) return;
+          const file = new File([blob], `Comprobante-TasaPlus-${Date.now()}.png`, { type: 'image/png' });
+
+          // Device Native Share API (Android / iOS / Windows / Chrome)
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                title: 'Comprobante TasaPlus',
+                text: `Comprobante TasaPlus: ${amount} ${symbol} = ${vesTotal} Bs (${rateStr})`,
+                files: [file]
+              });
+              return;
+            } catch (err) {
+              // User cancelled share window or fallback
+            }
+          }
+
+          // Fallback Download PNG
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `Comprobante-TasaPlus-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 'image/png');
+      } catch (ex) {
+        console.error('Error generando comprobante PNG:', ex);
+      }
+    };
+
+    function shareWhatsApp() {
+      const text = encodeURIComponent(getSummaryText());
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+
+    function shareTelegram() {
+      const text = encodeURIComponent(getSummaryText());
+      window.open(`https://t.me/share/url?url=&text=${text}`, '_blank');
+    }
+
+    // Tour Guiado
+    let currentTourStep = 0;
+    const tourSteps = [
+      { title: '¡Bienvenido a TasaPlus!', desc: 'Tu monitor inteligente de cotizaciones en tiempo real para Dólar BCV, Euro BCV y Criptomonedas.' },
+      { title: 'Cotizaciones en Tiempo Real', desc: 'Toca cualquier tarjeta arriba para seleccionarla automáticamente en la calculadora.' },
+      { title: 'Calculadora Bidireccional', desc: 'Ingresa el monto en moneda extranjera o en Bolívares para realizar la conversión instantánea.' },
+      { title: 'Comprobantes Nativos', desc: 'Genera resúmenes de tus operaciones y compártelos por WhatsApp o Telegram.' }
+    ];
+
+    function startTour() {
+      currentTourStep = 0;
+      updateTourModal();
+      const modal = document.getElementById('tour-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function updateTourModal() {
+      const step = tourSteps[currentTourStep];
+      document.getElementById('tour-step-badge').textContent = `Paso ${currentTourStep + 1} de ${tourSteps.length}`;
+      document.getElementById('tour-step-title').textContent = step.title;
+      document.getElementById('tour-step-desc').textContent = step.desc;
+      document.getElementById('btn-tour-prev').style.display = currentTourStep === 0 ? 'none' : 'inline-block';
+      document.getElementById('btn-tour-next').textContent = currentTourStep === tourSteps.length - 1 ? '¡Entendido!' : 'Siguiente';
+    }
+
+    function nextTourStep() {
+      if (currentTourStep < tourSteps.length - 1) {
+        currentTourStep++;
+        updateTourModal();
+      } else {
+        closeTour();
+      }
+    }
+
+    function prevTourStep() {
+      if (currentTourStep > 0) {
+        currentTourStep--;
+        updateTourModal();
+      }
+    }
+
+    function closeTour() {
+      const modal = document.getElementById('tour-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+      fetchRates();
+      setInterval(fetchRates, 30000);
+    });
+  </script>
+</body>
+</html>

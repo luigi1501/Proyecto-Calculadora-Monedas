@@ -1,0 +1,138 @@
+@using TasaPlus.Shared.Models
+
+@if (IsVisible)
+{
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md transition-all animate-fadeIn">
+        <div class="glass-card border border-white/10 rounded-3xl max-w-2xl w-full p-6 text-white shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+            
+            <!-- Header del Modal -->
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xl">
+                        🛡️
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-black text-white">Guía P2P & Misión TasaPlus</h2>
+                        <p class="text-xs text-slate-400">Consejos de seguridad y filosofía del proyecto</p>
+                    </div>
+                </div>
+                <button @onclick="Close" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center font-bold">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Navegación por pestañas -->
+            <div class="flex gap-2 border-b border-slate-800 pb-2">
+                <button @onclick='() => _activeTab = "p2p"' class="px-4 py-2 text-xs font-extrabold rounded-xl transition-all @(_activeTab == "p2p" ? "bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20" : "bg-slate-900 text-slate-400 hover:text-white")">
+                    🛡️ Consejos P2P Binance
+                </button>
+                <button @onclick='() => _activeTab = "mision"' class="px-4 py-2 text-xs font-extrabold rounded-xl transition-all @(_activeTab == "mision" ? "bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20" : "bg-slate-900 text-slate-400 hover:text-white")">
+                    🚀 Misión y Visión
+                </button>
+                <button @onclick='() => _activeTab = "formula"' class="px-4 py-2 text-xs font-extrabold rounded-xl transition-all @(_activeTab == "formula" ? "bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20" : "bg-slate-900 text-slate-400 hover:text-white")">
+                    🧮 Fórmula en Tiempo Real
+                </button>
+            </div>
+
+            <!-- Contenido Pestaña 1: Guía P2P -->
+            @if (_activeTab == "p2p")
+            {
+                <div class="space-y-4 text-sm text-slate-300">
+                    <h3 class="text-base font-bold text-emerald-400 flex items-center gap-2">
+                        <span>Reglas de Oro para Comprar y Vender P2P</span>
+                    </h3>
+                    <ul class="space-y-3 font-sans">
+                        <li class="p-3 bg-slate-900/80 rounded-2xl border border-slate-800">
+                            <strong class="text-white block mb-1">1. Revisa siempre la cuenta bancaria:</strong>
+                            Nunca liberes criptomonedas sin verificar en tu aplicación bancaria oficial que el dinero está realmente <em class="text-emerald-400 font-normal">disponible</em> (no en diferido o pendiente).
+                        </li>
+                        <li class="p-3 bg-slate-900/80 rounded-2xl border border-slate-800">
+                            <strong class="text-white block mb-1">2. No aceptes pagos de terceros:</strong>
+                            El nombre del titular de la cuenta bancaria del remitente DEBE coincidir exactamente con el nombre verificado en la cuenta de Binance.
+                        </li>
+                        <li class="p-3 bg-slate-900/80 rounded-2xl border border-slate-800">
+                            <strong class="text-white block mb-1">3. Atención con falsos correos y capturas:</strong>
+                            Ignora correos falsos que dicen "Binance Payment Received" o capturas editadas. Confía únicamente en el saldo de tu banco.
+                        </li>
+                        <li class="p-3 bg-slate-900/80 rounded-2xl border border-slate-800">
+                            <strong class="text-white block mb-1">4. Chat oficial únicamente:</strong>
+                            Toda la comunicación de la orden debe realizarse a través del chat interno de Binance. Nunca aceptes llevar la conversación a WhatsApp o Telegram.
+                        </li>
+                    </ul>
+
+                    <!-- Banner de Referido en Modal -->
+                    <div class="p-4 bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-slate-900 rounded-2xl border border-amber-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                        <div>
+                            <span class="font-extrabold text-amber-400 block text-sm">¿Aún no tienes cuenta en Binance?</span>
+                            <span class="text-slate-300">Regístrate gratis con nuestro enlace y obtén un 10% de descuento en comisiones.</span>
+                        </div>
+                        <a href="https://accounts.binance.com/register?ref=948971471" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl whitespace-nowrap shadow-md shadow-amber-500/20">
+                            Crear Cuenta
+                        </a>
+                    </div>
+                </div>
+            }
+
+            <!-- Contenido Pestaña 2: Misión y Visión -->
+            @if (_activeTab == "mision")
+            {
+                <div class="space-y-4 text-sm text-slate-300">
+                    <div class="p-4 bg-slate-900/80 rounded-2xl border border-emerald-500/20">
+                        <h4 class="text-base font-bold text-emerald-400 mb-1">Nuestra Misión</h4>
+                        <p class="leading-relaxed">
+                            Brindar a comerciantes, profesionales y usuarios en Venezuela una herramienta financiera rápida, imparcial y 100% precisa en C# puro para consultar cotizaciones y realizar conversiones en tiempo real sin cálculos erróneos.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800">
+                        <h4 class="text-base font-bold text-white mb-1">Nuestra Visión</h4>
+                        <p class="leading-relaxed">
+                            Convertirnos en el estándar de referencia multiplataforma (Web, Windows y Android) para el monitoreo de divisa oficial (BCV) y mercado Cripto/P2P Binance en la región.
+                        </p>
+                    </div>
+                </div>
+            }
+
+            <!-- Contenido Pestaña 3: Fórmula -->
+            @if (_activeTab == "formula")
+            {
+                <div class="space-y-3 text-sm text-slate-300">
+                    <p class="leading-relaxed">
+                        TasaPlus sincroniza automáticamente cada 30 segundos los pares de cotización global con la tasa P2P local:
+                    </p>
+                    <div class="p-4 bg-slate-950 font-mono text-xs text-emerald-400 rounded-2xl border border-emerald-500/30">
+                        Monto VES = Cotización Binance Spot (USD) × Tasa USDT P2P (VES)
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        Esto asegura que cotizaciones como BTC, ETH y BNB reflejen su valor exacto equivalente en Bolívares en el momento exacto de la transacción.
+                    </p>
+                </div>
+            }
+
+            <!-- Footer -->
+            <div class="pt-3 border-t border-slate-800 flex justify-end">
+                <button @onclick="Close" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-500/20">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    public bool IsVisible { get; private set; } = false;
+    private string _activeTab = "p2p";
+
+    public void Show()
+    {
+        IsVisible = true;
+        _activeTab = "p2p";
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        IsVisible = false;
+        StateHasChanged();
+    }
+}

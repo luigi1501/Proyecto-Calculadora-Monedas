@@ -1,0 +1,344 @@
+@using TasaPlus.Shared.Models
+@using TasaPlus.Shared.Services
+@using System.Globalization
+@inject TasasDataService TasasService
+@implements IDisposable
+
+<div class="max-w-4xl mx-auto px-4 space-y-6">
+
+    <!-- Header Comercial TasaPlus -->
+    <header class="sticky top-0 z-50 glass-card border-b border-white/10 px-4 py-3.5 mb-6 rounded-2xl">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center font-black text-emerald-400">
+                    T+
+                </div>
+                <div>
+                    <h1 class="text-lg font-black text-white tracking-tight">
+                        Tasa<span class="text-emerald-400">Plus</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 font-mono">
+                        Refresco: @FormattedLastUpdated
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <a href="https://accounts.binance.com/register?ref=948971471" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-extrabold text-xs flex items-center gap-1.5 transition-all" title="Crear cuenta en Binance con 10% de descuento">
+                    <span>🟡 Binance 10% OFF</span>
+                </a>
+                <button @onclick="OpenGuia" class="px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-extrabold text-xs flex items-center gap-1.5 transition-all" title="Guía P2P & Misión">
+                    <span>🛡️ Guía P2P</span>
+                </button>
+                <button @onclick="OpenTour" class="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-emerald-400 font-extrabold text-sm" title="Tour Guiado">
+                    ?
+                </button>
+                <button @onclick="RefreshManual" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition-all" title="Actualizar Tasas">
+                    <span class="@(IsRefreshing ? "inline-block animate-spin" : "")">🔄</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Grid de Tarjetas de Cotizaciones -->
+    <section>
+        <div class="flex items-center justify-between mb-3 px-1">
+            <h2 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                <span>Cotizaciones del Día (Toca una para seleccionar)</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            </h2>
+            <span class="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                Binance & BCV Real-Time
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @foreach (var tasa in Tasas)
+            {
+                var isSelected = SelectedTasa?.Code == tasa.Code;
+                <div @onclick="() => SelectTasa(tasa)" class="glass-card rounded-2xl p-4 border transition-all cursor-pointer hover:scale-102 @(isSelected ? "border-emerald-500 bg-emerald-950/20 shadow-lg shadow-emerald-500/10" : "border-slate-800 hover:border-slate-700")">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="text-xs font-bold text-slate-400">@tasa.Name</span>
+                            <h3 class="text-lg font-black text-white">@tasa.Code</h3>
+                        </div>
+                        <span class="text-xs font-extrabold px-2 py-1 rounded-lg @(tasa.Type == "crypto" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20")">
+                            @tasa.Symbol
+                        </span>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-xl font-black text-emerald-400 font-mono">@tasa.FormattedVes</p>
+                        @if (tasa.Type == "crypto")
+                        {
+                            <p class="text-xs text-slate-400 font-mono">1 @tasa.Code = @tasa.FormattedUsd</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- Calculadora Bidireccional -->
+    <section class="glass-card rounded-3xl p-6 border border-white/10 shadow-2xl relative overflow-hidden space-y-5">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div>
+                <h2 class="text-xl font-black text-white">Calculadora Inteligente</h2>
+                <p class="text-xs text-slate-400">Selección activa: <strong class="text-emerald-400">@SelectedTasa?.Name</strong></p>
+            </div>
+            <select value="@SelectedTasaCode" @onchange="OnSelectChanged" class="bg-slate-900 border border-emerald-500/40 text-emerald-300 font-bold text-xs rounded-xl px-3 py-2">
+                @foreach (var tasa in Tasas)
+                {
+                    <option value="@tasa.Code">@tasa.Code - @tasa.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="space-y-4">
+            <!-- Campo Extranjero/Cripto -->
+            <div>
+                <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Monto Moneda Extranjera / Cripto</label>
+                <div class="relative flex items-center">
+                    <input type="text" inputmode="decimal" value="@ForeignDisplay" @oninput="OnForeignInput" @onfocus="OnForeignFocus" @onblur="OnForeignBlur" placeholder="0,00" class="w-full bg-slate-900/90 border border-slate-700 focus:border-emerald-500 rounded-2xl py-3.5 pl-4 pr-24 text-white text-xl font-extrabold focus:outline-none" />
+                    <span class="absolute right-3 bg-slate-800 text-emerald-400 text-xs font-extrabold px-3 py-1.5 rounded-xl">
+                        @SelectedTasa?.Symbol @SelectedTasa?.Code
+                    </span>
+                </div>
+            </div>
+
+            <!-- Tasa Aplicada -->
+            <div class="flex items-center justify-between py-1">
+                <div class="h-px bg-slate-800 flex-1"></div>
+                <span class="px-3 text-xs font-bold text-emerald-400 bg-slate-900 border border-slate-800 py-1 rounded-full mx-2 font-mono shadow-sm">
+                    1 @SelectedTasa?.Code = @FormattedRateVes Bs
+                </span>
+                <div class="h-px bg-slate-800 flex-1"></div>
+            </div>
+
+            <!-- Campo Bolívares -->
+            <div>
+                <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Monto en Bolívares (VES)</label>
+                <div class="relative flex items-center">
+                    <input type="text" inputmode="decimal" value="@VesDisplay" @oninput="OnVesInput" @onfocus="OnVesFocus" @onblur="OnVesBlur" placeholder="0,00" class="w-full bg-slate-900/90 border border-slate-700 focus:border-emerald-500 rounded-2xl py-3.5 pl-4 pr-24 text-emerald-400 text-xl font-black focus:outline-none" />
+                    <span class="absolute right-3 bg-slate-800 text-emerald-400 text-xs font-extrabold px-3 py-1.5 rounded-xl">
+                        Bs VES
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+            <button @onclick="OpenComprobante" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black py-3.5 px-4 rounded-2xl shadow-lg shadow-emerald-500/25 active:scale-98 flex items-center justify-center gap-2 text-sm">
+                <span>Compartir Comprobante</span>
+            </button>
+            <button @onclick="ResetCalculator" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-3.5 rounded-2xl border border-slate-700" title="Limpiar">
+                🧹
+            </button>
+        </div>
+    </section>
+
+</div>
+
+<ComprobanteModal @ref="_comprobanteModal" />
+<TourGuiado @ref="_tourGuiado" />
+<GuiaModal @ref="_guiaModal" />
+
+@code {
+    private static readonly CultureInfo CultureVE = new CultureInfo("es-VE");
+    private List<TasaModel> Tasas = new();
+    private TasaModel? SelectedTasa;
+    private string SelectedTasaCode = "USD";
+    private decimal ForeignAmount = 1.00m;
+    private decimal VesAmount = 0m;
+    private bool IsRefreshing = false;
+    private string FormattedLastUpdated = "--:--:--";
+
+    // Display strings para los inputs de texto con separadores de miles
+    private string ForeignDisplay = "1,00";
+    private string VesDisplay = "0,00";
+    private bool ForeignFocused = false;
+    private bool VesFocused = false;
+
+    private ComprobanteModal? _comprobanteModal;
+    private TourGuiado? _tourGuiado;
+    private GuiaModal? _guiaModal;
+
+    public string FormattedRateVes => SelectedTasa != null ? SelectedTasa.RateVes.ToString("N2", CultureVE) : "0,00";
+
+    protected override async Task OnInitializedAsync()
+    {
+        TasasService.OnTasasUpdated += HandleTasasUpdated;
+        TasasService.StartPeriodicRefresh(TimeSpan.FromSeconds(30));
+        await RefreshManual();
+    }
+
+    private async Task RefreshManual()
+    {
+        try
+        {
+            IsRefreshing = true;
+            StateHasChanged();
+            Tasas = await TasasService.RefreshTasasAsync();
+            FormattedLastUpdated = TasasService.GetFormattedLastUpdated();
+
+            if (Tasas.Count > 0)
+            {
+                SelectedTasa = Tasas.Find(t => t.Code == SelectedTasaCode) ?? Tasas[0];
+                RecalculateVes();
+            }
+        }
+        catch
+        {
+            // Resiliencia para evitar fallos de renderizado en movil
+        }
+        finally
+        {
+            IsRefreshing = false;
+            StateHasChanged();
+        }
+    }
+
+    private void HandleTasasUpdated()
+    {
+        InvokeAsync(() =>
+        {
+            Tasas = TasasService.GetCurrentTasas();
+            FormattedLastUpdated = TasasService.GetFormattedLastUpdated();
+            if (SelectedTasa != null)
+            {
+                SelectedTasa = Tasas.Find(t => t.Code == SelectedTasa.Code) ?? SelectedTasa;
+                RecalculateVes();
+            }
+            StateHasChanged();
+        });
+    }
+
+    private void SelectTasa(TasaModel tasa)
+    {
+        SelectedTasa = tasa;
+        SelectedTasaCode = tasa.Code;
+        RecalculateVes();
+    }
+
+    private void OnSelectChanged(ChangeEventArgs e)
+    {
+        SelectedTasaCode = e.Value?.ToString() ?? "USD";
+        SelectedTasa = Tasas.Find(t => t.Code == SelectedTasaCode);
+        RecalculateVes();
+    }
+
+    private void OnForeignInput(ChangeEventArgs e)
+    {
+        var raw = e.Value?.ToString() ?? "";
+        ForeignDisplay = raw;
+        if (TryParseAmount(raw, out var val))
+        {
+            ForeignAmount = val;
+            RecalculateVes();
+            VesDisplay = VesAmount.ToString("N2", CultureVE);
+        }
+    }
+
+    private void OnForeignFocus(FocusEventArgs e)
+    {
+        ForeignFocused = true;
+        // Al enfocar mostrar numero sin separadores para edicion facil
+        ForeignDisplay = ForeignAmount.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture).Replace('.', ',');
+    }
+
+    private void OnForeignBlur(FocusEventArgs e)
+    {
+        ForeignFocused = false;
+        // Al perder foco aplicar formato con separadores de miles
+        ForeignDisplay = ForeignAmount.ToString("N2", CultureVE);
+    }
+
+    private void OnVesInput(ChangeEventArgs e)
+    {
+        var raw = e.Value?.ToString() ?? "";
+        VesDisplay = raw;
+        if (TryParseAmount(raw, out var val))
+        {
+            VesAmount = val;
+            RecalculateForeign();
+            ForeignDisplay = ForeignAmount.ToString("N2", CultureVE);
+        }
+    }
+
+    private void OnVesFocus(FocusEventArgs e)
+    {
+        VesFocused = true;
+        VesDisplay = VesAmount.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture).Replace('.', ',');
+    }
+
+    private void OnVesBlur(FocusEventArgs e)
+    {
+        VesFocused = false;
+        VesDisplay = VesAmount.ToString("N2", CultureVE);
+    }
+
+    // Parsea importes que pueden venir con punto (.) como separador de miles y coma (,) como decimal
+    private static bool TryParseAmount(string raw, out decimal result)
+    {
+        result = 0m;
+        if (string.IsNullOrWhiteSpace(raw)) return false;
+        // Normalizar: quitar puntos de miles, convertir coma decimal a punto
+        var normalized = raw.Replace(".", "").Replace(",", ".");
+        return decimal.TryParse(normalized, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out result);
+    }
+
+    private void RecalculateVes()
+    {
+        if (SelectedTasa != null && SelectedTasa.RateVes > 0)
+        {
+            VesAmount = Math.Round(ForeignAmount * SelectedTasa.RateVes, 2);
+            if (!VesFocused) VesDisplay = VesAmount.ToString("N2", CultureVE);
+        }
+    }
+
+    private void RecalculateForeign()
+    {
+        if (SelectedTasa != null && SelectedTasa.RateVes > 0)
+        {
+            ForeignAmount = Math.Round(VesAmount / SelectedTasa.RateVes, 4);
+            if (!ForeignFocused) ForeignDisplay = ForeignAmount.ToString("N2", CultureVE);
+        }
+    }
+
+    private void ResetCalculator()
+    {
+        ForeignAmount = 1.00m;
+        ForeignDisplay = "1,00";
+        RecalculateVes();
+    }
+
+    private void OpenComprobante()
+    {
+        if (SelectedTasa != null)
+        {
+            var calculo = new CalculoModel
+            {
+                ForeignAmount = ForeignAmount,
+                VesAmount = VesAmount,
+                CurrencyCode = SelectedTasa.Code,
+                AppliedRateVes = SelectedTasa.RateVes,
+                AppliedRateUsd = SelectedTasa.RateUsd
+            };
+            _comprobanteModal?.Show(calculo, SelectedTasa);
+        }
+    }
+
+    private void OpenTour()
+    {
+        _tourGuiado?.StartTour();
+    }
+
+    private void OpenGuia()
+    {
+        _guiaModal?.Show();
+    }
+
+    public void Dispose()
+    {
+        TasasService.OnTasasUpdated -= HandleTasasUpdated;
+    }
+}

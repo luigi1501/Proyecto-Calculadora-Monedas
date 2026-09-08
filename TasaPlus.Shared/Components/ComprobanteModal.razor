@@ -1,0 +1,118 @@
+@using TasaPlus.Shared.Models
+@using System.Globalization
+@inject IJSRuntime JS
+
+@if (IsVisible && Calculo != null && Tasa != null)
+{
+    <div class="fixed inset-0 z-[140] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full rounded-3xl p-6 border border-emerald-500/40 shadow-2xl space-y-5 animate-scale-up text-white relative">
+            
+            <button @onclick="Close" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 text-lg">
+                ✕
+            </button>
+
+            <!-- Encabezado del Comprobante -->
+            <div class="text-center space-y-1 pt-1">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 p-2 mx-auto flex items-center justify-center">
+                    <span class="text-2xl font-black text-emerald-400">T+</span>
+                </div>
+                <h3 class="text-xl font-black tracking-tight text-white">Comprobante de Cotización</h3>
+                <p class="text-xs text-slate-400 font-mono">@Calculo.FormattedTimestamp • TasaPlus Real-Time</p>
+            </div>
+
+            <!-- Tarjeta Visual del Comprobante -->
+            <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 space-y-3 text-sm shadow-inner">
+                <div class="flex justify-between items-center text-slate-400 border-b border-slate-800/80 pb-2">
+                    <span class="text-xs uppercase font-bold">Cotización:</span>
+                    <span class="font-extrabold text-white">@Tasa.Name (@Tasa.Code)</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-400">
+                    <span class="text-xs uppercase font-bold">Monto Operación:</span>
+                    <span class="font-black text-emerald-400 text-base">@Calculo.ForeignAmount.ToString("N2", CultureVE) @Tasa.Symbol</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-400">
+                    <span class="text-xs uppercase font-bold">Tasa Aplicada:</span>
+                    <span class="font-mono text-cyan-400 text-xs">1 @Tasa.Code = @Tasa.RateVes.ToString("N2", CultureVE) Bs</span>
+                </div>
+                <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-slate-200">
+                    <span class="text-xs uppercase font-black">Total en Bolívares:</span>
+                    <span class="text-xl font-black text-emerald-300 font-mono">@Calculo.VesAmount.ToString("N2", CultureVE) Bs</span>
+                </div>
+            </div>
+
+            <!-- Acciones de Descarga y Compartir -->
+            <div class="space-y-2">
+                <button @onclick="DownloadPng" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3.5 rounded-xl flex items-center justify-center gap-2 text-xs transition-all shadow-lg shadow-emerald-500/25 active:scale-98">
+                    <span>📸 Compartir / Descargar Imagen (PNG HD)</span>
+                </button>
+                
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <button @onclick="ShareWhatsApp" class="bg-emerald-700/40 hover:bg-emerald-600/50 border border-emerald-500/30 text-emerald-300 font-extrabold py-2.5 rounded-xl flex items-center justify-center gap-1.5 text-xs transition-all">
+                        <span>💬 WhatsApp</span>
+                    </button>
+                    <button @onclick="ShareTelegram" class="bg-cyan-700/40 hover:bg-cyan-600/50 border border-cyan-500/30 text-cyan-300 font-extrabold py-2.5 rounded-xl flex items-center justify-center gap-1.5 text-xs transition-all">
+                        <span>✈️ Telegram</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private static readonly CultureInfo CultureVE = new CultureInfo("es-VE");
+    public bool IsVisible { get; set; } = false;
+    public CalculoModel? Calculo { get; set; }
+    public TasaModel? Tasa { get; set; }
+
+    public void Show(CalculoModel calculo, TasaModel tasa)
+    {
+        Calculo = calculo;
+        Tasa = tasa;
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        IsVisible = false;
+    }
+
+    private async Task DownloadPng()
+    {
+        if (Calculo == null || Tasa == null) return;
+
+        string rateStr = $"1 {Tasa.Code} = {Tasa.RateVes.ToString("N2", CultureVE)} Bs";
+        await JS.InvokeVoidAsync("downloadComprobantePng",
+            $"{Tasa.Name} ({Tasa.Code})",
+            Calculo.ForeignAmount.ToString("N2", CultureVE),
+            Tasa.Symbol,
+            rateStr,
+            Calculo.VesAmount.ToString("N2", CultureVE),
+            Calculo.FormattedTimestamp);
+    }
+
+    private string GetSummaryText()
+    {
+        if (Calculo == null || Tasa == null) return "";
+        return $"📊 *Comprobante TasaPlus*\n" +
+               $"🔹 Cotización: {Tasa.Name} ({Tasa.Code})\n" +
+               $"💵 Monto Operación: {Calculo.ForeignAmount.ToString("N2", CultureVE)} {Tasa.Symbol}\n" +
+               $"⚡ Tasa Aplicada: 1 {Tasa.Code} = {Tasa.RateVes.ToString("N2", CultureVE)} Bs\n" +
+               $"💰 Total en Bolívares: {Calculo.VesAmount.ToString("N2", CultureVE)} Bs\n" +
+               $"🕒 Hora: {Calculo.FormattedTimestamp}\n" +
+               $"Calculado con TasaPlus 🚀";
+    }
+
+    private async Task ShareWhatsApp()
+    {
+        var text = Uri.EscapeDataString(GetSummaryText());
+        await JS.InvokeVoidAsync("open", $"https://wa.me/?text={text}", "_blank");
+    }
+
+    private async Task ShareTelegram()
+    {
+        var text = Uri.EscapeDataString(GetSummaryText());
+        await JS.InvokeVoidAsync("open", $"https://t.me/share/url?url=&text={text}", "_blank");
+    }
+}

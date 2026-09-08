@@ -1,0 +1,28 @@
+## .NET / C#
+[Bb]in/
+[Oo]bj/
+.vs/
+.vscode/
+*.user
+*.userosscache
+*.sln.docstates
+.idea/
+
+## OS & Temp
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+
+## Node / Web / Vercel
+node_modules/
+dist/
+.vercel/
+
+## Large Binary Executables and Installers (Exceeds GitHub 100MB Limit)
+*.exe
+*.apk
+*.zip
+**/downloads/
+desktop/publish/
+installer/

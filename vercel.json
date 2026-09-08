@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "builds": [
+    { "src": "frontend/**", "use": "@vercel/static" }
+  ],
+  "headers": [
+    {
+      "source": "/frontend/src/landing/downloads/TasaPlus.apk",
+      "headers": [
+        { "key": "Content-Type", "value": "application/vnd.android.package-archive" },
+        { "key": "Content-Disposition", "value": "attachment; filename=\"TasaPlus.apk\"" }
+      ]
+    },
+    {
+      "source": "/frontend/src/landing/downloads/TasaPlus-Setup.exe",
+      "headers": [
+        { "key": "Content-Type", "value": "application/octet-stream" },
+        { "key": "Content-Disposition", "value": "attachment; filename=\"TasaPlus-Setup.exe\"" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/frontend/src/landing/index.html" },
+    { "source": "/calculadora", "destination": "/frontend/calculadora/index.html" },
+    { "source": "/landing", "destination": "/frontend/src/landing/index.html" }
+  ]
+}

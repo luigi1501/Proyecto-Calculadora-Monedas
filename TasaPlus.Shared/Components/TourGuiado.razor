@@ -1,0 +1,123 @@
+@inject IJSRuntime JS
+
+@if (IsVisible)
+{
+    <div class="fixed inset-0 z-[150] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full rounded-3xl p-6 border border-emerald-500/40 shadow-2xl space-y-6 animate-scale-up">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-extrabold text-xs">
+                        Paso @(CurrentStep + 1) de @Steps.Count
+                    </span>
+                </div>
+                <button @onclick="SkipTour" class="text-xs text-slate-400 hover:text-white font-bold">
+                    Omitir
+                </button>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="text-xl font-black text-white">@Steps[CurrentStep].Title</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">@Steps[CurrentStep].Description</p>
+            </div>
+
+            <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+                @if (CurrentStep > 0)
+                {
+                    <button @onclick="PreviousStep" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white text-xs font-bold transition-all">
+                        Anterior
+                    </button>
+                }
+                else
+                {
+                    <div></div>
+                }
+
+                @if (CurrentStep < Steps.Count - 1)
+                {
+                    <button @onclick="NextStep" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition-all shadow-lg shadow-emerald-500/20">
+                        Siguiente
+                    </button>
+                }
+                else
+                {
+                    <button @onclick="CompleteTour" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950 font-black text-xs transition-all shadow-lg shadow-emerald-400/25">
+                        ¡Entendido!
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    public bool IsVisible { get; set; } = false;
+    public int CurrentStep { get; set; } = 0;
+
+    private class StepInfo
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+    }
+
+    private readonly List<StepInfo> Steps = new()
+    {
+        new StepInfo { Title = "¡Bienvenido a TasaPlus!", Description = "Tu monitor inteligente y calculadora de cotizaciones en tiempo real para Dólar BCV, Euro BCV y Criptomonedas (USDT, BTC, ETH, BNB)." },
+        new StepInfo { Title = "Cotizaciones en Tiempo Real", Description = "Toca cualquier tarjeta de moneda para cargarla automáticamente en la calculadora. Las tasas se actualizan cada 30 segundos sin congelar la pantalla." },
+        new StepInfo { Title = "Calculadora Bidireccional", Description = "Escribe el monto en moneda extranjera o en Bolívares (VES); los cálculos se actualizan de forma instantánea y exacta." },
+        new StepInfo { Title = "Comprobantes Nativos", Description = "Genera resúmenes profesionales de tus cálculos y compártelos a WhatsApp o Telegram con un solo clic." }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var hasSeen = await JS.InvokeAsync<string>("localStorage.getItem", "tasaplus_tour_seen");
+            if (string.IsNullOrEmpty(hasSeen))
+            {
+                IsVisible = true;
+            }
+        }
+        catch
+        {
+            // Ignorar en entornos donde JS/LocalStorage no esté inicializado aún
+        }
+    }
+
+    public void StartTour()
+    {
+        CurrentStep = 0;
+        IsVisible = true;
+        StateHasChanged();
+    }
+
+    private void NextStep()
+    {
+        if (CurrentStep < Steps.Count - 1) CurrentStep++;
+    }
+
+    private void PreviousStep()
+    {
+        if (CurrentStep > 0) CurrentStep--;
+    }
+
+    private async Task SkipTour()
+    {
+        IsVisible = false;
+        await SaveTourSeenAsync();
+    }
+
+    private async Task CompleteTour()
+    {
+        IsVisible = false;
+        await SaveTourSeenAsync();
+    }
+
+    private async Task SaveTourSeenAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("localStorage.setItem", "tasaplus_tour_seen", "true");
+        }
+        catch { }
+    }
+}

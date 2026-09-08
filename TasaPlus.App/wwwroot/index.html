@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>TasaPlus</title>
+    <base href="/" />
+    <link rel="stylesheet" href="_content/TasaPlus.Shared/css/app.css" />
+    <link rel="stylesheet" href="TasaPlus.App.styles.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #0b0e14;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+        }
+        #app {
+            width: 100%;
+            height: 100%;
+        }
+        /* Splash Screen Estilo Facebook / Meta */
+        .fb-splash-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            padding: 60px 20px 40px 20px;
+            background: radial-gradient(circle at center, #161b22 0%, #0b0e14 100%);
+            color: #ffffff;
+            user-select: none;
+        }
+        .splash-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        .logo-wrapper {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin-bottom: 24px;
+            animation: fbPulse 2s infinite ease-in-out;
+        }
+        .logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 24px;
+            box-shadow: 0 12px 32px rgba(0, 102, 255, 0.25), 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        .app-title {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #a5d6ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+        .app-subtitle {
+            font-size: 13px;
+            color: #8b949e;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+        .splash-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .loader-bar-container {
+            width: 140px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .loader-bar {
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, #2f81f7, #58a6ff);
+            border-radius: 4px;
+            position: absolute;
+            animation: fbLoading 1.5s infinite ease-in-out;
+        }
+        .brand-meta {
+            font-size: 11px;
+            color: #6e7681;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        @keyframes fbPulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(47, 129, 247, 0)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 18px rgba(47, 129, 247, 0.4)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(47, 129, 247, 0)); }
+        }
+
+        @keyframes fbLoading {
+            0% { left: -40%; width: 30%; }
+            50% { left: 35%; width: 50%; }
+            100% { left: 100%; width: 30%; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="fb-splash-container">
+            <div class="splash-center">
+                <div class="logo-wrapper">
+                    <img src="logo.png" alt="TasaPlus Logo" class="logo-img" />
+                </div>
+                <h1 class="app-title">TasaPlus</h1>
+                <p class="app-subtitle">Calculadora & Monitor de Tasas</p>
+            </div>
+            
+            <div class="splash-footer">
+                <div class="loader-bar-container">
+                    <div class="loader-bar"></div>
+                </div>
+                <span class="brand-meta">TasaPlus Commercial</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="_framework/blazor.webview.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0-android;net10.0-windows10.0.19041.0</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>TasaPlus.App</RootNamespace>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- Display name -->
+    <ApplicationTitle>TasaPlus</ApplicationTitle>
+
+    <!-- App Identifier -->
+    <ApplicationId>com.tasaplus.app</ApplicationId>
+
+    <!-- Versions -->
+    <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+
+    <!-- Target ABIs para procesadores Android (ARM64, ARM32, x86_64) -->
+    <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">android-arm;android-arm64;android-x86;android-x64</RuntimeIdentifiers>
+
+    <!-- Configuracion de Firma Digital de APK -->
+    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidSigningKeyStore>$(MSBuildProjectDirectory)\tasaplus.keystore</AndroidSigningKeyStore>
+    <AndroidSigningKeyAlias>tasaplus</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>tasaplus123</AndroidSigningKeyPass>
+    <AndroidSigningStorePass>tasaplus123</AndroidSigningStorePass>
+
+    <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- App Icon de Android -->
+    <MauiIcon Include="Resources\AppIcon\appicon.png" ForegroundFile="Resources\AppIcon\appicon.png" Color="#0B0E14" />
+
+    <!-- Splash Screen Nativo de Android -->
+    <MauiSplashScreen Include="Resources\Splash\splash.png" Color="#0B0E14" BaseSize="128,128" />
+
+    <!-- Archivos Web estaticos -->
+    <MauiAsset Include="wwwroot\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.20" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="10.0.20" />
+    <ProjectReference Include="..\TasaPlus.Shared\TasaPlus.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
