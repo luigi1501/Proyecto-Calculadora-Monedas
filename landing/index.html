@@ -9,7 +9,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="shortcut icon" href="images/logo.png" type="image/png">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/favicon.png">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -151,38 +154,33 @@
           </div>
         </div>
 
-        <!-- Tarjeta Informativa Flotante Animada -->
+        <!-- Tarjeta Informativa y Vista Previa de la Calculadora -->
         <div class="lg:col-span-5 reveal">
           <div class="relative animate-float">
             <div class="absolute -inset-4 rounded-3xl bg-gradient-to-tr from-emerald-500 to-cyan-500 opacity-25 blur-2xl animate-pulse-glow"></div>
             
-            <div class="relative glass-card p-7 rounded-3xl border border-slate-700/60 shadow-2xl space-y-6 glow-emerald text-left hover:border-emerald-500/50 transition-all">
-              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div class="relative glass-card p-5 rounded-3xl border border-slate-700/60 shadow-2xl space-y-4 glow-emerald text-left hover:border-emerald-500/50 transition-all">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                 <div class="flex items-center gap-3">
-                  <img src="images/logo.png" class="w-9 h-9 object-contain">
-                  <span class="font-black text-white text-lg">TasaPlus Monitor</span>
+                  <img src="images/logo.png" class="w-8 h-8 object-contain">
+                  <span class="font-black text-white text-base">TasaPlus Calculadora</span>
                 </div>
                 <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/20 flex items-center gap-1.5">
-                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> En Vivo
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Vista Previa
                 </span>
               </div>
 
-              <p class="text-slate-300 text-sm leading-relaxed">
-                TasaPlus actualiza las cotizaciones oficiales del BCV y Binance de forma automatizada, permitiendo realizar conversiones instantáneas con un solo clic.
-              </p>
-
-              <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
-                <div class="flex justify-between items-center text-xs">
-                  <span class="text-slate-400 font-medium">Cotización BCV Oficial</span>
-                  <span class="text-emerald-400 font-mono" id="hero-usd-val">Cargando...</span>
+              <!-- Captura Real de la Calculadora -->
+              <a href="calculadora/index.html" class="block rounded-2xl overflow-hidden border border-slate-700/80 shadow-2xl group relative">
+                <img src="images/calculadora-preview.png" alt="Vista Previa de la Calculadora TasaPlus" class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
+                  <span class="text-xs font-bold text-emerald-300 bg-slate-900/90 px-3.5 py-2 rounded-xl border border-emerald-500/30 flex items-center gap-1.5">
+                    🚀 Abrir Calculadora en Tiempo Real
+                  </span>
                 </div>
-                <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800">
-                  <span class="text-sm font-bold text-slate-300">Tasa USDT (Binance P2P)</span>
-                  <span class="text-base font-black text-emerald-400" id="hero-usdt-val">Cargando...</span>
-                </div>
-              </div>
+              </a>
 
-              <div class="text-center pt-2">
+              <div class="text-center pt-1">
                 <a href="calculadora/index.html" class="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3.5 rounded-xl text-xs transition-all hover:scale-102 shadow-lg shadow-emerald-500/20">
                   <span>Ir a la Calculadora Completa</span>
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -456,10 +454,13 @@
       <p class="text-xs text-slate-400">Obtén las versiones oficiales compiladas para Windows y Android.</p>
       
       <div class="flex flex-wrap justify-center gap-4 pt-4">
-        <a href="downloads/TasaPlus-Setup.exe" download class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold px-6 py-3.5 rounded-2xl border border-slate-700 text-xs transition-all hover:scale-105">
+        <a href="https://github.com/luigi1501/Proyecto-Calculadora-Monedas/releases/download/v1.0.0/TasaPlus-Setup.exe" target="_blank" download class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold px-6 py-3.5 rounded-2xl border border-slate-700 text-xs transition-all hover:scale-105">
           <span>Descargar Windows (.EXE)</span>
         </a>
-        <a href="downloads/TasaPlus.apk" download class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-6 py-3.5 rounded-2xl text-xs transition-all shadow-lg shadow-emerald-500/20 hover:scale-105">
+        <a href="https://github.com/luigi1501/Proyecto-Calculadora-Monedas/releases/download/v1.0.0/TasaPlus-Windows.zip" target="_blank" download class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-cyan-300 font-bold px-6 py-3.5 rounded-2xl border border-cyan-500/40 text-xs transition-all hover:scale-105">
+          <span>Descargar Windows Portable (.ZIP)</span>
+        </a>
+        <a href="https://github.com/luigi1501/Proyecto-Calculadora-Monedas/releases/download/v1.0.0/TasaPlus.apk" target="_blank" download class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-6 py-3.5 rounded-2xl text-xs transition-all shadow-lg shadow-emerald-500/20 hover:scale-105">
           <span>Descargar Android (.APK)</span>
         </a>
       </div>
