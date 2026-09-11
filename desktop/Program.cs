@@ -28,7 +28,7 @@ namespace TasaPlusDesktop
             string profileDir = Path.Combine(appData, "TasaPlus", "DesktopProfile");
             Directory.CreateDirectory(profileDir);
 
-            string url = "http://localhost:5000/";
+            string url = "https://tasa-plus.vercel.app/";
             bool launched = false;
 
             try

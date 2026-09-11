@@ -16,7 +16,7 @@ namespace TasaPlus.Shared.Services
         private static readonly CultureInfo CultureVE = new CultureInfo("es-VE");
         private static readonly CultureInfo CultureUS = new CultureInfo("en-US");
 
-        private List<TasaModel> _currentTasas = new List<TasaModel>();
+        private List<TasaModel> _currentTasas = GetDefaultInitialTasas();
         private DateTime _lastUpdated = DateTime.MinValue;
         private readonly SemaphoreSlim _refreshLock = new SemaphoreSlim(1, 1);
         private static readonly TimeSpan CacheDuration = TimeSpan.FromSeconds(20);
@@ -30,6 +30,21 @@ namespace TasaPlus.Shared.Services
         {
             _httpClient = httpClient;
             _binanceService = new BinanceService(httpClient);
+        }
+
+        private static List<TasaModel> GetDefaultInitialTasas()
+        {
+            var now = DateTime.Now;
+            string fechaFormatted = now.ToString("dd/MM/yyyy HH:mm:ss", CultureUS);
+            return new List<TasaModel>
+            {
+                new TasaModel { Code = "USD", Name = "Dólar BCV", RateVes = 820.10m, RateUsd = 1.00m, Symbol = "$", SymbolVes = "Bs", Type = "fiat", FormattedVes = "820,10 Bs", FormattedUsd = "$1,00 USD", LastUpdated = now, FechaActualizacion = fechaFormatted },
+                new TasaModel { Code = "EUR", Name = "Euro BCV", RateVes = 954.02m, RateUsd = 1.16m, Symbol = "€", SymbolVes = "Bs", Type = "fiat", FormattedVes = "954,02 Bs", FormattedUsd = "€1,00 EUR", LastUpdated = now, FechaActualizacion = fechaFormatted },
+                new TasaModel { Code = "USDT", Name = "USDT (Binance P2P)", RateVes = 963.72m, RateUsd = 1.00m, Symbol = "USDT", SymbolVes = "Bs", Type = "crypto", FormattedVes = "963,72 Bs", FormattedUsd = "$1,00 USD", LastUpdated = now, FechaActualizacion = fechaFormatted },
+                new TasaModel { Code = "BNB", Name = "Binance Coin", RateVes = 520000.00m, RateUsd = 650.00m, Symbol = "BNB", SymbolVes = "Bs", Type = "crypto", FormattedVes = "520.000,00 Bs", FormattedUsd = "$650,00 USD", LastUpdated = now, FechaActualizacion = fechaFormatted },
+                new TasaModel { Code = "BTC", Name = "Bitcoin", RateVes = 75000000.00m, RateUsd = 90000.00m, Symbol = "₿", SymbolVes = "Bs", Type = "crypto", FormattedVes = "75.000.000,00 Bs", FormattedUsd = "$90.000,00 USD", LastUpdated = now, FechaActualizacion = fechaFormatted },
+                new TasaModel { Code = "ETH", Name = "Ethereum", RateVes = 2500000.00m, RateUsd = 3000.00m, Symbol = "Ξ", SymbolVes = "Bs", Type = "crypto", FormattedVes = "2.500.000,00 Bs", FormattedUsd = "$3.000,00 USD", LastUpdated = now, FechaActualizacion = fechaFormatted }
+            };
         }
 
         public List<TasaModel> GetCurrentTasas() => _currentTasas;

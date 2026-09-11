@@ -166,6 +166,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Tasas = TasasService.GetCurrentTasas();
+        if (Tasas.Count > 0)
+        {
+            SelectedTasa = Tasas.Find(t => t.Code == SelectedTasaCode) ?? Tasas[0];
+            RecalculateVes();
+        }
         TasasService.OnTasasUpdated += HandleTasasUpdated;
         TasasService.StartPeriodicRefresh(TimeSpan.FromSeconds(30));
         await RefreshManual();
